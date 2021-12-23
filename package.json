@@ -1,0 +1,15 @@
+{
+  "name": "my-blog-0.0.3",
+  "version": "0.0.3",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "marked": "^4.0.8"
+  }
+}
