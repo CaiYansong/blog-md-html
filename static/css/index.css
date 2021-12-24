@@ -85,3 +85,9 @@ pre code {
   padding: 12px;
   display: block;
 }
+
+@media screen and (max-width: 321px) {
+  body {
+    font-size: 1vw;
+  }
+}

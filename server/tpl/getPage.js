@@ -15,6 +15,7 @@ ${content}
   </div>
   ${getFooter()}
 </body>
+<script src="/js/index.js"></script>
 </html>`;
   return page;
 }

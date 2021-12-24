@@ -74,10 +74,10 @@
 
 <script>
   // 数据
-  const startDate = new Date("2021/9/6");
-  const title = "集美大学2021-2022学年第一学期 侯丽平 个人课表";
-  const days = ["一", "二", "三", "四", "五", "六", "日"];
-  const times = [
+  var startDate = new Date("2021/9/6");
+  var title = "集美大学2021-2022学年第一学期 侯丽平 个人课表";
+  var days = ["一", "二", "三", "四", "五", "六", "日"];
+  var times = [
     { label: "一、二节", value: "0", time: "8:00-8:45\n8:50-9:35" },
     { label: "三、四节", value: "1", time: "10:05-10:50\n10:55-11:40" },
     { label: "五、六节", value: "2", time: "14:00-14:45\n14:50-15:35" },
@@ -89,7 +89,7 @@
     },
   ];
 
-  const timetable = [
+  var timetable = [
     // 周一
     [
       [{ info: "中国古代文学3\n新师0312 黄海蓉\n1~16周 1、2节", start: 1, end: 16 }],
@@ -163,25 +163,25 @@
 
   // 函数 & 执行
 
-  const currentTimeEle = document.getElementById("current-time");
-  const currentWeekEle = document.getElementById("current-week");
-  const contentTableEle = document.getElementById("content-table");
+  var currentTimeEle = document.getElementById("current-time");
+  var currentWeekEle = document.getElementById("current-week");
+  var contentTableEle = document.getElementById("content-table");
 
   // init
   init();
 
-  const allBtn = document.getElementById("all-btn");
+  var allBtn = document.getElementById("all-btn");
   allBtn.addEventListener("click", showAllTimetable);
 
   function init() {
     setDateFormat();
 
     // 渲染标题
-    const tableTitleEle = document.getElementById("table-title");
+    var tableTitleEle = document.getElementById("table-title");
     tableTitleEle.innerHTML = title;
 
-    const date = new Date();
-    const day = date.getDay();
+    var date = new Date();
+    var day = date.getDay();
     // 渲染时间
     showDate(date);
 
@@ -193,7 +193,7 @@
   }
 
   function showCurrentWeek(date) {
-    const currentWeek = getWeeks(startDate, date);
+    var currentWeek = getWeeks(startDate, date);
     currentWeekEle.innerHTML = currentWeek > 0 ? `目前是 第${currentWeek}周` : '还未开学';
   }
 
@@ -202,10 +202,10 @@
   }
 
   function showData() {
-    let preDay = -1;
+    var preDay = -1;
     setInterval(() => {
-      const date = new Date();
-      const day = date.getDay();
+      var date = new Date();
+      var day = date.getDay();
 
       if (preDay != day) {
         preDay = day;
@@ -220,7 +220,7 @@
   }
 
   function showTomorrowTimetable(day, date) {
-    const tomorrowTableEle = document.getElementById("tomorrow-table");
+    var tomorrowTableEle = document.getElementById("tomorrow-table");
     showCurrentTimetable(tomorrowTableEle, day + 1, date);
   }
 
@@ -230,15 +230,15 @@
     if (weekDay < 0) {
       weekDay = 6;
     }
-    const currentData = timetable[weekDay];
+    var currentData = timetable[weekDay];
 
-    let html = '<table cellspacing="0">';
+    var html = '<table cellspacing="0">';
     // 星期几
     html += `<tr><td></td><td></td><td>星期${days[weekDay]}</td></tr>`;
 
     currentData &&
       currentData.forEach((it, idx) => {
-        const timeInfo = times[idx];
+        var timeInfo = times[idx];
         html += `<tr><td class="order">${timeInfo.label}</td><td class="time">${timeInfo.time
           }</td><td class="info">${renderCourse(it, date)}</td></tr>`;
       });
@@ -248,7 +248,7 @@
 
   // 渲染完整 课表
   function showAllTimetable() {
-    let html = '<table cellspacing="0">';
+    var html = '<table cellspacing="0">';
 
     // 星期几
     html += "<tr><td></td><td></td>";
@@ -261,9 +261,9 @@
     times.forEach((timeInfo, idx) => {
       html += `<tr><td class="order">${timeInfo.label}</td><td class="time">${timeInfo.time}</td>`;
       // 周几 对应的课程
-      for (let i = 0; i < 7; i++) {
-        const currentData = timetable[i][idx];
-        let str = '';
+      for (var i = 0; i < 7; i++) {
+        var currentData = timetable[i][idx];
+        var str = '';
         currentData && currentData.forEach(it => {
           str += (str ? '<br />' : '');
           str += it.info;
@@ -274,7 +274,7 @@
     });
 
     html += "</table>";
-    let allTableEle = document.getElementById("all-table");
+    var allTableEle = document.getElementById("all-table");
     allTableEle.innerHTML = html;
     allTableEle = null;
   }
@@ -286,11 +286,11 @@
    * @returns
    */
   function renderCourse(course, date) {
-    const week = getWeeks(startDate, date);
+    var week = getWeeks(startDate, date);
     if (!course) {
       return "";
     }
-    let html = "";
+    var html = "";
     course.forEach(({ info, start, end, isOdd, isEven }) => {
       // 还未开始
       if (week < start) {
@@ -378,16 +378,29 @@
    * @param {Date} end
    */
   function getWeeks(start, end) {
-    const current = end || new Date();
+    var current = end || new Date();
     // 设置本年的第一天
-    const firstDay = start || new Date(`${current.getFullYear()}/1/1`);
+    var firstDay = start || new Date(`${current.getFullYear()}/1/1`);
 
     // 过去了多少 毫秒。 +1 为了解决 00:00:00 周数少一的情况
-    const times = current.getTime() + 1 - firstDay.getTime();
+    var times = current.getTime() + 1 - firstDay.getTime();
 
     // 今年过去了多少天
-    const days = Math.ceil(times / (24 * 60 * 60 * 1000));
+    var days = Math.ceil(times / (24 * 60 * 60 * 1000));
 
     return Math.ceil(days / 7);
+  }
+</script>
+
+<script>
+  window.onload = function () {
+    // iframe 里面删除 header & footer
+    if (window.location.search.indexOf('?iframe=true') >= 0 || window.location.search.indexOf('&iframe=true') >= 0) {
+      var header = document.getElementById('header')
+      header && header.parentNode.removeChild(header);
+      var footer = document.getElementById('footer');
+      console.log(footer);
+      footer && footer.parentNode.removeChild(footer);
+    }
   }
 </script>
