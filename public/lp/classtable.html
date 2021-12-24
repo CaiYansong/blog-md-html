@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LP 课表</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta property="article:author" content="蔡延松">
+  <meta property="article:tag" content="蔡延松 延松 cys YansongCai caiyansong CaiYansong">
+  <link rel="icon" href="/imgs/dog.ico">
+  <link rel="stylesheet" href="/css/index.css">
+</head>
+<body>
+  <div id="header" class="header">
+    <div class="header-wrap">
+      <a class="logo" href="/">
+        <img src="/imgs/dog_128px.png" />
+      </a>
+      <div class="nav">
+        <a href="/">首页</a>
+        <a href="/article-list">文章列表</a>
+        <a href="/lp">LP</a>
+        <a href="/note.html">记事本</a>
+        <a href="/about.html">关于</a>
+      </div>
+    </div>
+  </div>
+  <div id="root" class="root">
+<title>LP 课表</title>
+
+<style>
+  body {}
+
+  .current-time {
+    color: red;
+  }
+
+  table,
+  table tr th,
+  table tr td {
+    border: 1px solid #999;
+  }
+
+  table {
+    margin-bottom: 20px;
+  }
+
+  tr {}
+
+  td {
+    padding: 0 10px;
+    white-space: pre-wrap;
+  }
+
+  del {
+    color: #ccc;
+  }
+
+  button {
+    margin-bottom: 20px;
+  }
+
+
+  td.info {
+    min-width: 150px;
+  }
+
+  td.order {
+    min-width: 70px;
+  }
+
+  td.time {
+    min-width: 90px;
+  }
+
+  a,
+  button {
+    font-size: 20px;
+  }
+
+  .not-start {
+    color: #999;
+  }
+</style>
+<h2 id="current-time" class="current-time"></h2>
+<h3 id="current-week" class="current-week"></h3>
+<h2 id="table-title"></h2>
+
+<h3>当天课表</h3>
+<div id="content-table"></div>
+
+<h3>明天课表</h3>
+<!--   <button id="tomorrow-btn">点击查看 明天课表</button> -->
+<div id="tomorrow-table"></div>
+
+<h3>完整课表</h3>
+<button id="all-btn">点击查看完整课表</button>
+<div id="all-table"></div>
+
+<div><a href="https://jwgls.webvpn.jmu.edu.cn/Student/default.aspx">教务系统 课表 链接</a></div>
+<div><a href="http://jwxt.jmu.edu.cn/student/for-std/course-table">教务管理信息系统 课表 链接</a></div>
+
+<script>
+  // 数据
+  const startDate = new Date("2021/9/6");
+  const title = "集美大学2021-2022学年第一学期 侯丽平 个人课表";
+  const days = ["一", "二", "三", "四", "五", "六", "日"];
+  const times = [
+    { label: "一、二节", value: "0", time: "8:00-8:45\n8:50-9:35" },
+    { label: "三、四节", value: "1", time: "10:05-10:50\n10:55-11:40" },
+    { label: "五、六节", value: "2", time: "14:00-14:45\n14:50-15:35" },
+    { label: "七、八节", value: "3", time: "15:55-16:40\n16:45-17:30" },
+    {
+      label: "九、十、\n十一节",
+      value: "4",
+      time: "19:00-19:45\n19:50-20:35\n20:40-21:25",
+    },
+  ];
+
+  const timetable = [
+    // 周一
+    [
+      [{ info: "中国古代文学3\n新师0312 黄海蓉\n1~16周 1、2节", start: 1, end: 16 }],
+      [{ info: "文学概论\n新师0312 谢慧英\n1~16周 3、4节", start: 1, end: 16 }],
+      "",
+      "",
+      "",
+    ],
+    // 周二
+    [
+      "",
+      [{ info: "外国文学1\n新师0312 曾丽华\n1~16周 3、4节", start: 1, end: 16 }],
+      "",
+      "",
+      [
+        {
+          info: "闽南传统音乐文化\n1~15周(单周) (9-10节)\n印斗08C0206 杨丽霞",
+          start: 1,
+          end: 15,
+          isOdd: true,
+        },
+        {
+          info: "闽南传统音乐文化\n2~16周(双周) (9-10节)\n线上自主学习（中国大学MOOC平台）杨丽霞",
+          start: 2,
+          end: 16,
+          isEven: true,
+        },
+      ],
+    ],
+    // 周三
+    [
+      "",
+      [{ info: "《诗经》导读\n建发0302 刘利侠\n1~16周 3、4节", start: 1, end: 16 }],
+      "",
+      "",
+      "",
+    ],
+    // 周四
+    [
+      [{ info: "语言学概论\n新师0312 吴光辉\n1~16周 1、2节", start: 1, end: 16 }],
+      [
+        {
+          info: "中国古典小说戏曲导读\n新师0312 范德怡\n1~16周 3、4节",
+          start: 1,
+          end: 16,
+        },
+      ],
+      [{ info: "中国古代文学3\n新师0312 黄海蓉\n1~16周 5、6节", start: 1, end: 16 }],
+      "",
+      "",
+    ],
+    // 周五
+    [
+      [
+        {
+          info: "外国文学1\n新师0312 曾丽华\n1~8周 1、2节",
+          start: 1,
+          end: 8,
+        },
+      ],
+      [{ info: "西方文化概论\n新师0312 曾丽华\n1~16周 3、4节", start: 1, end: 16 }],
+      "",
+      "",
+      "",
+    ],
+    // 周六
+    ["", "", "", "", ""],
+    // 周日
+    ["", "", "", "", ""],
+  ];
+
+  // 函数 & 执行
+
+  const currentTimeEle = document.getElementById("current-time");
+  const currentWeekEle = document.getElementById("current-week");
+  const contentTableEle = document.getElementById("content-table");
+
+  // init
+  init();
+
+  const allBtn = document.getElementById("all-btn");
+  allBtn.addEventListener("click", showAllTimetable);
+
+  function init() {
+    setDateFormat();
+
+    // 渲染标题
+    const tableTitleEle = document.getElementById("table-title");
+    tableTitleEle.innerHTML = title;
+
+    const date = new Date();
+    const day = date.getDay();
+    // 渲染时间
+    showDate(date);
+
+
+    showCurrentWeek(date);
+    showCurrentTimetable(contentTableEle, day);
+    showTomorrowTimetable(day);
+    showData();
+  }
+
+  function showCurrentWeek(date) {
+    const currentWeek = getWeeks(startDate, date);
+    currentWeekEle.innerHTML = currentWeek > 0 ? `目前是 第${currentWeek}周` : '还未开学';
+  }
+
+  function showDate(date) {
+    currentTimeEle.innerHTML = date.format("yyyy-MM-dd 星期w hh:mm:ss");
+  }
+
+  function showData() {
+    let preDay = -1;
+    setInterval(() => {
+      const date = new Date();
+      const day = date.getDay();
+
+      if (preDay != day) {
+        preDay = day;
+        // 周日为 0
+        showCurrentTimetable(contentTableEle, day, date);
+        showTomorrowTimetable(day, date);
+      }
+      // 渲染时间
+      showDate(date);
+      showCurrentWeek(date);
+    }, 1000);
+  }
+
+  function showTomorrowTimetable(day, date) {
+    const tomorrowTableEle = document.getElementById("tomorrow-table");
+    showCurrentTimetable(tomorrowTableEle, day + 1, date);
+  }
+
+  // 渲染当天课表
+  function showCurrentTimetable(ele, day, date) {
+    weekDay = day - 1;
+    if (weekDay < 0) {
+      weekDay = 6;
+    }
+    const currentData = timetable[weekDay];
+
+    let html = '<table cellspacing="0">';
+    // 星期几
+    html += `<tr><td></td><td></td><td>星期${days[weekDay]}</td></tr>`;
+
+    currentData &&
+      currentData.forEach((it, idx) => {
+        const timeInfo = times[idx];
+        html += `<tr><td class="order">${timeInfo.label}</td><td class="time">${timeInfo.time
+          }</td><td class="info">${renderCourse(it, date)}</td></tr>`;
+      });
+    html += "</table>";
+    ele.innerHTML = html;
+  }
+
+  // 渲染完整 课表
+  function showAllTimetable() {
+    let html = '<table cellspacing="0">';
+
+    // 星期几
+    html += "<tr><td></td><td></td>";
+    days.forEach((day) => {
+      html += `<td>星期${day}</td>`;
+    });
+    html += "</tr>";
+
+    // 第几节课
+    times.forEach((timeInfo, idx) => {
+      html += `<tr><td class="order">${timeInfo.label}</td><td class="time">${timeInfo.time}</td>`;
+      // 周几 对应的课程
+      for (let i = 0; i < 7; i++) {
+        const currentData = timetable[i][idx];
+        let str = '';
+        currentData && currentData.forEach(it => {
+          str += (str ? '<br />' : '');
+          str += it.info;
+        });
+        html += `<td class="info">${str}</td>`;
+      }
+      html += "</tr>";
+    });
+
+    html += "</table>";
+    let allTableEle = document.getElementById("all-table");
+    allTableEle.innerHTML = html;
+    allTableEle = null;
+  }
+
+  /**
+   * 渲染当前课程
+   * @param course
+   * @param date
+   * @returns
+   */
+  function renderCourse(course, date) {
+    const week = getWeeks(startDate, date);
+    if (!course) {
+      return "";
+    }
+    let html = "";
+    course.forEach(({ info, start, end, isOdd, isEven }) => {
+      // 还未开始
+      if (week < start) {
+        html += `<div class="not-start">${info}</div>`;
+        return;
+      }
+      // 已结束
+      if (week > end) {
+        html += `<del>${info}</del>`;
+        return;
+      }
+      // 单周 && 当前处于双周 隐藏该项
+      if (isOdd && week % 2 === 0) {
+        html += `<div class="not-start">${info}</div>`;
+        return;
+      }
+      // 双周 && 当前处于单周 隐藏该项
+      if (isEven && week % 2 === 1) {
+        html += `<div class="not-start">${info}</div>`;
+        return;
+      }
+
+      html += info;
+    });
+    return html;
+  }
+
+  // 辅助函数 start
+
+  /**
+   * 设置时间日期格式转换
+   * 有周几的版本
+   * console.log(new Date().format("yyyy-MM-dd 星期w hh:mm:ss"));
+   */
+  function setDateFormat() {
+    Date.prototype.format = function (formatStr = "yyyy-MM-dd 星期w hh:mm:ss") {
+      var str = formatStr;
+      var Week = ["日", "一", "二", "三", "四", "五", "六"];
+      str = str.replace(/yyyy|YYYY/, this.getFullYear());
+      str = str.replace(
+        /yy|YY/,
+        this.getYear() % 100 > 9
+          ? (this.getYear() % 100).toString()
+          : "0" + (this.getYear() % 100)
+      );
+      str = str.replace(
+        /MM/,
+        this.getMonth() + 1 > 9
+          ? (this.getMonth() + 1).toString()
+          : "0" + (this.getMonth() + 1)
+      );
+      str = str.replace(/M/g, this.getMonth() + 1);
+      str = str.replace(/w|W/g, Week[this.getDay()]);
+      str = str.replace(
+        /dd|DD/,
+        this.getDate() > 9 ? this.getDate().toString() : "0" + this.getDate()
+      );
+      str = str.replace(/d|D/g, this.getDate());
+      str = str.replace(
+        /hh|HH/,
+        this.getHours() > 9 ? this.getHours().toString() : "0" + this.getHours()
+      );
+      str = str.replace(/h|H/g, this.getHours());
+      str = str.replace(
+        /mm/,
+        this.getMinutes() > 9
+          ? this.getMinutes().toString()
+          : "0" + this.getMinutes()
+      );
+      str = str.replace(/m/g, this.getMinutes());
+      str = str.replace(
+        /ss|SS/,
+        this.getSeconds() > 9
+          ? this.getSeconds().toString()
+          : "0" + this.getSeconds()
+      );
+      str = str.replace(/s|S/g, this.getSeconds());
+      return str;
+    };
+  }
+
+  /**
+   * 获取过了几周
+   * @param {Date} start
+   * @param {Date} end
+   */
+  function getWeeks(start, end) {
+    const current = end || new Date();
+    // 设置本年的第一天
+    const firstDay = start || new Date(`${current.getFullYear()}/1/1`);
+
+    // 过去了多少 毫秒。 +1 为了解决 00:00:00 周数少一的情况
+    const times = current.getTime() + 1 - firstDay.getTime();
+
+    // 今年过去了多少天
+    const days = Math.ceil(times / (24 * 60 * 60 * 1000));
+
+    return Math.ceil(days / 7);
+  }
+</script>
+  </div>
+  <div id="footer" class="footer">
+    <div class="footer-info">
+      &copy; 2021 蔡延松
+    </div>
+    <a href="http://www.beian.miit.gov.cn/" target="_blank">浙ICP备19046722号</a>
+  </div>
+</body>
+</html>

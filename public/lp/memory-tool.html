@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>记忆辅助工具</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta property="article:author" content="蔡延松">
+  <meta property="article:tag" content="蔡延松 延松 cys YansongCai caiyansong CaiYansong">
+  <link rel="icon" href="/imgs/dog.ico">
+  <link rel="stylesheet" href="/css/index.css">
+</head>
+<body>
+  <div id="header" class="header">
+    <div class="header-wrap">
+      <a class="logo" href="/">
+        <img src="/imgs/dog_128px.png" />
+      </a>
+      <div class="nav">
+        <a href="/">首页</a>
+        <a href="/article-list">文章列表</a>
+        <a href="/lp">LP</a>
+        <a href="/note.html">记事本</a>
+        <a href="/about.html">关于</a>
+      </div>
+    </div>
+  </div>
+  <div id="root" class="root">
+<title>记忆辅助工具</title>
+
+<style>
+  .root {
+    width: 100%;
+    flex: 1;
+    box-sizing: border-box;
+  }
+
+  .operation-box {
+    padding: 8px;
+    border: 1px solid #000;
+    background-color: #fff;
+  }
+</style>
+<div class="operation-box">
+  <button id="clear">清除数据</button>
+  <button id="save">保存文章</button>
+  <button id="load">加载文章</button>
+  <button id="hide">隐藏</button>
+  <button id="show">显示</button>
+  <button id="paste">粘贴</button>
+</div>
+<textarea id="root" class="root" contenteditable="true"></textarea>
+<script>
+  var root = document.getElementById('root');
+  var clear = document.getElementById('clear');
+  var save = document.getElementById('save');
+  var load = document.getElementById('load');
+  var hide = document.getElementById('hide');
+  var show = document.getElementById('show');
+  var paste = document.getElementById('paste');
+
+  var HIDE = 'hide';
+  var DATA = 'article';
+
+  function getSelectionInfo() {
+    var start = root.selectionStart | 0;
+    var end = root.selectionEnd | 0;
+    return {
+      start: start,
+      end: end,
+      selectedStr: root.value.slice(start, end)
+    }
+  }
+
+  String.prototype.splice = function (start, end, concatStr) {
+    var str = this;
+    var startStr = str.slice(0, start);
+    var endStr = str.slice(end);
+    return startStr + (concatStr || '') + endStr;
+  }
+
+  function setItem(start, end, str) {
+    var data = getData(HIDE);
+    data[start + '_' + end] = str;
+    setData(HIDE, data);
+  }
+
+  function getItem(start, end) {
+    var data = getData(HIDE);
+    return data[start + '_' + end];
+  }
+
+  function getItems(start, end) {
+    return getData(HIDE);
+  }
+
+  function clearItems() {
+    setData(HIDE);
+  }
+
+  function setData(key, obj) {
+    localStorage.setItem(key, JSON.stringify(obj || {}));
+  }
+
+  function getData(key, isObj = true) {
+    var str = localStorage.getItem(key);
+    return isObj ? (str && JSON.parse(str)) || {} : str;
+  }
+
+  function clearAll() {
+    localStorage.clear();
+  }
+
+  function pasteFn(dom, cb) {
+    if (dom && dom.focus) {
+      dom.focus();
+    }
+    if (document.execCommand) {
+      setTimeout(function () {
+        var res = document.execCommand("paste");
+        console.log(res)
+        cb && cb(res ? res : '')
+      }, 100)
+    }
+  }
+</script>
+
+<script>
+  clear.addEventListener('click', () => {
+    root.value = '';
+    clearAll();
+  });
+  save.addEventListener('click', () => {
+    localStorage.setItem(DATA, showAllStr());
+  });
+  load.addEventListener('click', () => {
+    root.value = getData(DATA, false);
+  });
+  paste.addEventListener('click', () => {
+    pasteFn(root, (res) => {
+      root.value = res;
+    });
+  });
+
+  hide.addEventListener('click', () => {
+    var selected = getSelectionInfo();
+    var start = selected.start;
+    var end = selected.end;
+    if (start == end) {
+      return;
+    }
+    root.value = root.value.splice(start, end, '_'.repeat(Math.abs(end - start)));
+    setItem(start, end, selected.selectedStr);
+  });
+  show.addEventListener('click', () => {
+    if (!root.value) {
+      return;
+    }
+    root.value = showAllStr();
+    clearItems();
+  });
+
+  function showAllStr() {
+    var str = root.value;
+    var data = getItems();
+    for (var key in data) {
+      if (Object.hasOwnProperty.call(data, key)) {
+        var start = key.split('_')[0];
+        var end = key.split('_')[1];
+        str = str.splice(start, end, data[key]);
+      }
+    }
+    return str
+  }
+</script>
+  </div>
+  <div id="footer" class="footer">
+    <div class="footer-info">
+      &copy; 2021 蔡延松
+    </div>
+    <a href="http://www.beian.miit.gov.cn/" target="_blank">浙ICP备19046722号</a>
+  </div>
+</body>
+</html>

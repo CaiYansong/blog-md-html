@@ -7,6 +7,7 @@ function getHeader() {
       <div class="nav">
         <a href="/">首页</a>
         <a href="/article-list">文章列表</a>
+        <a href="/lp">LP</a>
         <a href="/note.html">记事本</a>
         <a href="/about.html">关于</a>
       </div>

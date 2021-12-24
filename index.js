@@ -1,7 +1,1 @@
-function renderHeader(params) {
-  
-}
-
-function renderFooter(params) {
-  
-}
+require('./server/index');
