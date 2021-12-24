@@ -1,2 +1,2 @@
-# myBlog@0.0.3
+# Blog by MD to HTML
 node md to HTML
