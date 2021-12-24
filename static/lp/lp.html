@@ -1,0 +1,282 @@
+<title>LP</title>
+
+<style>
+  ul {
+    margin: 0;
+  }
+
+  li {
+    margin-bottom: 10px;
+  }
+
+  .title {
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .acquaintance-wrap,
+  .agree-wrap,
+  .dating-wrap {
+    margin: 20px;
+  }
+
+  .acquaintance-wrap {}
+
+  .agree-wrap {}
+
+  .agree-title {
+    color: #f00;
+  }
+
+  .dating-wrap {}
+
+  .dating-address {
+    font-weight: 700;
+  }
+</style>
+<div class="acquaintance-wrap">
+  <div class="acquaintance-title title">相识</div>
+  <div id="acquaintance-time" class="acquaintance-time">0天0时0分0秒</div>
+</div>
+<div class="agree-wrap">
+  <div class="agree-title title">❤️</div>
+  <div id="agree-time" class="agree-time">0天0时0分0秒</div>
+</div>
+<div class="dating-wrap">
+  <div class="dating-title title">相约</div>
+  <ul id="dating-list" class="dating-list"></ul>
+</div>
+
+<script>
+  // ------- 数据 -------
+  var ACQUAINTANCE_DATE = "2012-9-03 08:00:00";
+  var AGREE_DATE = "2020-09-14 01:00:00";
+  var datingList = [
+    {
+      address: "杭州",
+      startTime: "2021-11-22 21:00:00",
+      endTime: '2021-11-27 08:40:00',
+    },
+    {
+      address: "杭州",
+      startTime: "2021-11-5 22:00:00",
+      endTime: '2021-11-11 07:50:00',
+    },
+    {
+      address: "杭州",
+      startTime: "2021-10-14 22:00:00",
+      endTime: '2021-10-17 13:39:00',
+    },
+    {
+      address: "杭州",
+      startTime: "2021-07-19 21:30:00",
+      endTime: '2021-08-08 14:13:00',
+    },
+    {
+      address: "厦门",
+      startTime: "2021-06-19 15:10:00",
+      endTime: '2021-06-23 15:20:00',
+    },
+    // {
+    //   address: "厦门",
+    //   startTime: "2021-06-21 18:30:00",
+    //   endTime: '2021-06-23 15:20:00',
+    // },
+    // {
+    //   address: "厦门",
+    //   startTime: "2021-06-19 15:10:00",
+    //   endTime: '2021-06-20 21:00:00',
+    // },
+    {
+      address: "杭州",
+      startTime: "2021-06-11 19:10:00",
+      endTime: '2021-06-15 8:00:00',
+    },
+    {
+      address: "杭州",
+      startTime: "2021-05-29 19:10:00",
+      endTime: '2021-05-31 12:00:00',
+    },
+    {
+      address: "泉州 - 厦门",
+      startTime: "2021-05-02 14:40:00",
+      endTime: '2021-05-05 15:50:00',
+    },
+    {
+      address: "厦门",
+      startTime: "2021-04-24 20:00:00",
+      endTime: '2021-04-25 15:27:00',
+    },
+    {
+      address: "杭州",
+      startTime: "2021-04-15 22:35:00",
+      endTime: '2021-04-18 14:00:00',
+    },
+    {
+      address: "厦门",
+      startTime: "2021-04-03 16:00:00",
+      endTime: '2021-04-04 09:27:00',
+    },
+    {
+      address: "厦门",
+      startTime: "2021-03-13 14:00:00",
+      endTime: '2021-03-15 16:10:00',
+    },
+    {
+      address: "杭州",
+      startTime: "2021-01-16 21:12:00",
+      endTime: '2021-01-25 08:50:00',
+    },
+    {
+      address: "厦门",
+      startTime: "2020-12-31 14:00:00",
+      endTime: '2021-01-03 16:10:00',
+    },
+    {
+      address: "杭州",
+      startTime: "2020-12-06 07:10:00",
+      endTime: '2020-12-09 08:55:00',
+    },
+    {
+      address: "厦门",
+      startTime: "2020-11-06 14:00:00",
+      endTime: '2020-11-10 16:14:00',
+    },
+    {
+      address: "厦门",
+      startTime: "2020-10-03 08:20:00",
+      endTime: '2020-10-05 12:30:00',
+    },
+  ];
+</script>
+
+<script>
+  //  ------- 逻辑 -------
+  var acquaintanceTimeEle = document.getElementById("acquaintance-time");
+  var agreeTimeEle = document.getElementById("agree-time");
+  var datingListEle = document.getElementById("dating-list");
+
+  var datingItemTpl =
+    `
+                      <li class="dating-item">
+                        <div class="dating-address">{datingAddress}</div>
+                        <div class="dating-time">{datingTime}</div>
+                        <div class="interval-time">距离上次：{intervalTime}</div>
+                        <div class="left-time">{leftTime}</div>
+                      </li>
+                      `;
+
+  /**
+   * 根据字符串获取时间戳
+   * 2020-01-01 00:00:00
+   */
+  function getTimeFromStr(str) {
+    return new Date(str).getTime();
+  }
+
+  /**
+   * 获取展示的时间
+   */
+  function getShowDate(param, target, noPre) {
+    var leftTime = 0;
+    var pre = '距离现在：';
+    var now = target || Date.now();
+    if (typeof now === 'string') {
+      now = getTimeFromStr(now);
+    }
+    if (typeof param === 'number') {
+      leftTime = now - param;
+    }
+    if (typeof param === 'string') {
+      leftTime = now - getTimeFromStr(param);
+    }
+    if (leftTime < 0) {
+      leftTime = Math.abs(leftTime);
+      pre = '距离开始：'
+    }
+    if (typeof param === 'object') {
+      var start = getTimeFromStr(param.startTime)
+      var end = getTimeFromStr(param.endTime);
+      if (now < start) {
+        leftTime = Math.abs(now - start);
+        pre = '距离开始：'
+      } else if (now > end) {
+        leftTime = now - end;
+      } else {
+        leftTime = Math.abs(now - end);
+        pre = '距离结束：'
+      }
+    }
+    var days = 0;
+    var hours = 0;
+    var minutes = 0;
+    var seconds = 0;
+
+    // day
+    var dayTime = 24 * 60 * 60 * 1000;
+    if (leftTime > dayTime) {
+      days = parseInt(leftTime / dayTime, 10);
+      leftTime = leftTime % dayTime;
+    }
+    // hour
+    var hourTime = 60 * 60 * 1000;
+    if (leftTime > hourTime) {
+      hours = parseInt(leftTime / hourTime, 10);
+      leftTime = leftTime % hourTime;
+    }
+    // minute
+    var minuteTime = 60 * 1000;
+    if (leftTime > minuteTime) {
+      minutes = parseInt(leftTime / minuteTime, 10);
+      leftTime = leftTime % minuteTime;
+    }
+    // second
+    var secondTime = 1000;
+    if (leftTime > secondTime) {
+      seconds = parseInt(leftTime / secondTime, 10);
+      leftTime = leftTime % secondTime;
+    }
+
+    return (noPre ? '' : pre) + days + "天" + hours + "时" + minutes + "分" + seconds + "秒";
+  }
+
+  /**
+   * 渲染列表
+   */
+  function setDatingList() {
+    var listHtml = "";
+    var len = datingList.length;
+    for (var i = len - 1; i >= 0; i--) {
+      var item = datingList[i];
+      var itemText = datingItemTpl;
+      itemText = itemText.replace("{datingTime}", `${item.startTime} ～ ${item.endTime}`);
+      itemText = itemText.replace("{leftTime}", getShowDate(item));
+      itemText = itemText.replace("{datingAddress}", item.address);
+      if (i < len - 1) {
+        itemText = itemText.replace("{intervalTime}", getShowDate(datingList[i + 1].endTime, item.startTime, true));
+      } else {
+        itemText = itemText.replace('<div class="interval-time">距离上次：{intervalTime}</div>', '');
+      }
+      listHtml = itemText + listHtml;
+    }
+    datingListEle.innerHTML = listHtml;
+  }
+
+  /**
+   * 把时间展示到页面上
+   */
+  function showTime() {
+    acquaintanceTimeEle.innerHTML = getShowDate(ACQUAINTANCE_DATE, undefined, true);
+    agreeTimeEle.innerHTML = getShowDate(AGREE_DATE, undefined, true);
+    setDatingList();
+
+    var timer = setInterval(function () {
+      acquaintanceTimeEle.innerHTML = getShowDate(ACQUAINTANCE_DATE, undefined, true);
+      agreeTimeEle.innerHTML = getShowDate(AGREE_DATE, undefined, true);
+      setDatingList();
+    }, 1000);
+  }
+
+  showTime();
+
+</script>

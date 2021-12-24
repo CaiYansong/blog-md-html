@@ -8,13 +8,12 @@ body {
 
 a {
   text-decoration: none;
-  color: #000;
 }
 
 body {
   display: flex;
   flex-direction: column;
-  background-color: #fafafa;
+  background-color: #fff;
 }
 
 .header-wrap,
@@ -64,8 +63,25 @@ body {
   justify-content: center;
   align-items: center;
 }
+.footer a {
+  color: #000;
+}
 
 .root {
   flex: 1;
   padding: 20px;
+}
+
+code {
+  margin: 0 4px;
+  padding: 0 4px;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  background-color: #fafafa;
+}
+
+pre code {
+  margin: 12px;
+  padding: 12px;
+  display: block;
 }

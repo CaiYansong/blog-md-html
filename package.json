@@ -1,7 +1,7 @@
 {
   "name": "my-blog-0.0.3",
   "version": "0.0.3",
-  "description": "",
+  "description": "node md to HTML",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,6 +10,9 @@
   "license": "ISC",
   "dependencies": {},
   "devDependencies": {
-    "marked": "^4.0.8"
+    "cheerio": "^1.0.0-rc.10",
+    "highlight.js": "^11.3.1",
+    "marked": "^4.0.8",
+    "mkdirp": "^1.0.4"
   }
 }
