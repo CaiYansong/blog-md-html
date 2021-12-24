@@ -5,6 +5,9 @@ const getDirsNameSync = require("./utils/getDirsNameSync");
 const handleMD = require("./utils/handleMD");
 const handleHTML = require("./utils/handleHTML");
 const runCMD = require("./utils/runCMD");
+const writeFileSync = require("./utils/writeFileSync");
+
+const getPage = require("./tpl/getPage");
 
 const config = require("./config");
 
@@ -40,11 +43,16 @@ function handleArticle(filePath, baseDirPath, isBase) {
   const basePath = baseDirPath.replace(dirName, "");
 
   const extname = path.extname(filePath);
-  const fileTargetPath = filePath.replace(basePath, "").replace(extname, ".html");
+  const fileTargetPath = filePath
+    .replace(basePath, "")
+    .replace(extname, ".html");
   let targetPath = path.join(publicPath, fileTargetPath);
 
   if (isBase) {
-    targetPath = path.join(publicPath, fileTargetPath.replace(/^static[\\\/]/, ''))
+    targetPath = path.join(
+      publicPath,
+      fileTargetPath.replace(/^static[\\\/]/, "")
+    );
   }
   if (extnameLowCase === ".html") {
     handleHTML(filePath, targetPath);
@@ -53,16 +61,19 @@ function handleArticle(filePath, baseDirPath, isBase) {
   }
 }
 
-function handleBasePage() {
-  const basePages = getFilesNameSync(staticPath);
-  basePages.forEach((item) => {
-    const extname = path.extname(item).toLowerCase();
-    if (extname === ".html") {
-      handleHTML(item, publicPath);
-    } else if (extname === ".md") {
-      handleMD(item, publicPath);
-    }
+function handleArticleMenus() {
+  const articlePath = path.join(staticPath, "./articles");
+  const articles = getFilesNameSync(articlePath, true);
+  let str = "<ul>";
+  articles.forEach((item) => {
+    const name = path.basename(item);
+    const href = item.replace(staticPath, '');
+    str += `<li><a href="${href}" target="_blank">${name}</a></li>\n`;
   });
+  str += "</ul>";
+  const targetPath = path.join(publicPath, "./article-list.html");
+  console.log(targetPath);
+  writeFileSync(targetPath, getPage(str));
 }
 
 function handleAssets() {
@@ -72,6 +83,5 @@ function handleAssets() {
   });
 }
 
-// handleBasePage();
-// handleArticles();
+handleArticleMenus();
 handleAssets();
