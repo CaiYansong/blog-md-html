@@ -66,7 +66,7 @@ function handleArticleMenus() {
   const articles = getFilesNameSync(articlePath, true);
   let str = "<ul>";
   articles.forEach((item) => {
-    const name = path.basename(item);
+    const name = path.basename(item).replace(/.md$/i, '.html');
     const href = item.replace(staticPath, '').replace(/.md$/i, '.html');
     str += `<li><a href="${href}" target="_blank">${name}</a></li>\n`;
   });
