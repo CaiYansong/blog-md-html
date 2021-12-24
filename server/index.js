@@ -67,7 +67,7 @@ function handleArticleMenus() {
   let str = "<ul>";
   articles.forEach((item) => {
     const name = path.basename(item);
-    const href = item.replace(staticPath, '');
+    const href = item.replace(staticPath, '').replace(/.md$/i, '.html');
     str += `<li><a href="${href}" target="_blank">${name}</a></li>\n`;
   });
   str += "</ul>";
