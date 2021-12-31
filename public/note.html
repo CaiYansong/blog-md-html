@@ -123,85 +123,77 @@
 <div id="notes-wrap" class="notes-wrap"></div>
 <div id="log-info" class="log-info"></div>
 <script>
-  /* 注意。不要使用ES6语法，低端机型存在兼容问题！！！ */
+  /* 注意。不要使用ES6语法，存在兼容问题！！！ */
   // notes
-  var noteTpl = `<div class="note-item">
-  <div class="note-content">{content}</div>
-  <div class="note-info">
-    <span class="datetime">{datetime}</span>
-    <div class="note-options">
-      <button class="edit-btn" data-type="edit" data-id="{id}">编辑</button>
-      <button class="devare-btn" data-type="del" data-id="{id}">删除</button>
-    </div>
-  </div>
-  </div>`;
+  var noteTpl =
+    '<div class="note-item"> <div class="note-content">{content}</div> <div class="note-info"> <span class="datetime">{datetime}</span> <div class="note-options"> <button class="edit-btn" data-type="edit" data-id="{id}">编辑</button> <button class="devare-btn" data-type="del" data-id="{id}">删除</button> </div> </div> </div>';
 
-  var textAreaEle = document.getElementById('text-ipt');
-  var noteWrapEle = document.getElementById('notes-wrap');
+  var textAreaEle = document.getElementById("text-ipt");
+  var noteWrapEle = document.getElementById("notes-wrap");
 
-  var saveBtn = document.getElementById('save-btn');
-  var editBtn = document.getElementById('edit-btn');
-  var clearBtn = document.getElementById('clear-btn');
-  var tipsEle = document.getElementById('tips');
+  var saveBtn = document.getElementById("save-btn");
+  var editBtn = document.getElementById("edit-btn");
+  var clearBtn = document.getElementById("clear-btn");
+  var tipsEle = document.getElementById("tips");
 
   var editId = null;
-  var tempKey = 'temp';
+  var tempKey = "temp";
 
   init();
 
   function init() {
     setDateFormat();
 
-    saveBtn.addEventListener('click', function () {
+    saveBtn.addEventListener("click", function () {
       var val = textAreaEle.value;
       if (!val) {
-        tipsEle.innerHTML = '不能为空';
+        tipsEle.innerHTML = "不能为空";
         return;
       }
       addNote(escapeHTML(val), function () {
-        textAreaEle.value = '';
-        tipsEle.innerHTML = '';
-        renderNoteList();
-        localStorage.setItem(tempKey, '');
-      })
+        textAreaEle.value = "";
+        tipsEle.innerHTML = "";
+        renderNoteList(true);
+        localStorage.setItem(tempKey, "");
+      });
     });
 
-    editBtn.addEventListener('click', function () {
+    editBtn.addEventListener("click", function () {
       updateNote(escapeHTML(textAreaEle.value), function () {
-        renderNoteList();
+        renderNoteList(true);
 
-        textAreaEle.value = '';
-        editBtn.className = editBtn.className + ' hide';
-        saveBtn.className = saveBtn.className.replace(' hide', '');
-        localStorage.setItem(tempKey, '');
-      })
+        textAreaEle.value = "";
+        editBtn.className = editBtn.className + " hide";
+        saveBtn.className = saveBtn.className.replace(" hide", "");
+        localStorage.setItem(tempKey, "");
+      });
     });
 
-    noteWrapEle.addEventListener('click', function (e) {
-      var type = e.target.getAttribute('data-type');
-      var id = e.target.getAttribute('data-id');
-      if (type === 'del') {
+    noteWrapEle.addEventListener("click", function (e) {
+      var type = e.target.getAttribute("data-type");
+      var id = e.target.getAttribute("data-id");
+      if (type === "del") {
         removeNote(id, function () {
           renderNoteList();
         });
       }
-      if (type === 'edit') {
+      if (type === "edit") {
         readNote(id, function (item) {
           editId = id;
           textAreaEle.value = item.val;
-          saveBtn.className = saveBtn.className + ' hide';
-          editBtn.className = editBtn.className.replace(' hide', '');
-        })
+          saveBtn.className = saveBtn.className + " hide";
+          editBtn.className = editBtn.className.replace(" hide", "");
+        });
       }
     });
 
-    clearBtn.addEventListener('click', function () {
-      textAreaEle.value = '';
-      localStorage.setItem(tempKey, '');
-      clearBtn.className = clearBtn.className + ' hide';
-    })
+    clearBtn.addEventListener("click", function () {
+      textAreaEle.value = "";
+      localStorage.setItem(tempKey, "");
+      clearBtn.className = clearBtn.className + " hide";
+    });
 
-    textAreaEle.addEventListener('keydown', function () {
+    textAreaEle.addEventListener("keydown", function () {
       localStorage.setItem(tempKey, escapeHTML(textAreaEle.value));
     });
   }
@@ -209,29 +201,34 @@
   window.onload = function onPageLoad() {
     var val = localStorage.getItem(tempKey);
     if (val) {
-      logInfo('load temp val')
-      clearBtn.className = clearBtn.className.replace(' hide', '');
+      logInfo("load temp val");
+      clearBtn.className = clearBtn.className.replace(" hide", "");
       textAreaEle.value = descapeHTML(val);
     }
-  }
+  };
 
   function onDBLoad() {
-    renderNoteList();
+    renderNoteList(true);
   }
 
-  function renderNoteList() {
+  function renderNoteList(remoteSave) {
     readNotes(function (list) {
-      var html = '';
-      list && list.forEach && list.forEach(function (it) {
-        var item = noteTpl;
-        item = item.replace(/\{id\}/g, it.id);
-        item = item.replace(/\{content\}/g, it.val);
-        item = item.replace(/\{datetime\}/g, it.datetime);
-        item = item.replace(/\{time\}/g, it.time);
-        html += item;
-      });
+      var html = "";
+      list &&
+        list.forEach &&
+        list.forEach(function (it) {
+          var item = noteTpl;
+          item = item.replace(/\{id\}/g, it.id);
+          item = item.replace(/\{content\}/g, it.val);
+          item = item.replace(/\{datetime\}/g, it.datetime);
+          item = item.replace(/\{time\}/g, it.time);
+          html += item;
+        });
       noteWrapEle.innerHTML = html;
-    })
+      remoteSave &&
+        list.length > 0 &&
+        postStr(JSON.stringify(list), "note" + Date.now());
+    });
   }
 
   /* ---------- note 操作 ---------- */
@@ -241,22 +238,22 @@
   function addNote(val, cb) {
     var date = new Date();
     var time = date.getTime();
-    var item = { id: '' + time, val, time, datetime: date.format() };
+    var item = { id: "" + time, val, time, datetime: date.format() };
     if (hasIndexedDB) {
-      add(item, cb)
+      add(item, cb);
       return;
     }
-    addItem(item, cb)
+    addItem(item, cb);
   }
 
   function updateNote(val, cb) {
     var date = new Date();
     var item = { id: editId, val, time: date.getTime(), datetime: date.format() };
     if (hasIndexedDB) {
-      update(item, cb)
+      update(item, cb);
       return;
     }
-    updateItem(item, cb)
+    updateItem(item, cb);
   }
 
   function removeNote(id, cb) {
@@ -277,12 +274,11 @@
 
   function readNote(id, cb) {
     if (hasIndexedDB) {
-      read(id, cb)
+      read(id, cb);
       return;
     }
     getItem(id, cb);
   }
-
 
   /* ---------- 辅助函数 ---------- */
   /**
@@ -292,45 +288,45 @@
    */
   function setDateFormat() {
     Date.prototype.format = function (formatStr) {
-      var str = formatStr || 'yyyy-MM-dd 星期w hh:mm:ss';
-      var Week = ['日', '一', '二', '三', '四', '五', '六'];
+      var str = formatStr || "yyyy-MM-dd 星期w hh:mm:ss";
+      var Week = ["日", "一", "二", "三", "四", "五", "六"];
       str = str.replace(/yyyy|YYYY/, this.getFullYear());
       str = str.replace(
         /yy|YY/,
         this.getYear() % 100 > 9
           ? (this.getYear() % 100).toString()
-          : '0' + (this.getYear() % 100)
+          : "0" + (this.getYear() % 100)
       );
       str = str.replace(
         /MM/,
         this.getMonth() + 1 > 9
           ? (this.getMonth() + 1).toString()
-          : '0' + (this.getMonth() + 1)
+          : "0" + (this.getMonth() + 1)
       );
       str = str.replace(/M/g, this.getMonth() + 1);
       str = str.replace(/w|W/g, Week[this.getDay()]);
       str = str.replace(
         /dd|DD/,
-        this.getDate() > 9 ? this.getDate().toString() : '0' + this.getDate()
+        this.getDate() > 9 ? this.getDate().toString() : "0" + this.getDate()
       );
       str = str.replace(/d|D/g, this.getDate());
       str = str.replace(
         /hh|HH/,
-        this.getHours() > 9 ? this.getHours().toString() : '0' + this.getHours()
+        this.getHours() > 9 ? this.getHours().toString() : "0" + this.getHours()
       );
       str = str.replace(/h|H/g, this.getHours());
       str = str.replace(
         /mm/,
         this.getMinutes() > 9
           ? this.getMinutes().toString()
-          : '0' + this.getMinutes()
+          : "0" + this.getMinutes()
       );
       str = str.replace(/m/g, this.getMinutes());
       str = str.replace(
         /ss|SS/,
         this.getSeconds() > 9
           ? this.getSeconds().toString()
-          : '0' + this.getSeconds()
+          : "0" + this.getSeconds()
       );
       str = str.replace(/s|S/g, this.getSeconds());
       return str;
@@ -338,57 +334,56 @@
   }
 
   /**
-  * 转义 html 字符串
-  * @param {string} s
-  */
+   * 转义 html 字符串
+   * @param {string} s
+   */
   function escapeHTML(s) {
-    if (typeof s !== 'string') {
-      return '';
+    if (typeof s !== "string") {
+      return "";
     }
     var REG_HTML_ENCODE = /"|&|'|<|>|[\x00-\x20]|[\x7F-\xFF]|[\u0100-\u2700]/g;
-    return s.replace(REG_HTML_ENCODE,
-      function ($0) {
-        var c = $0.charCodeAt(0);
-        var r = ['&#'];
-        c = (c === 0x20) ? 0xA0 : c;
-        r.push(c);
-        r.push(';');
-        return r.join('');
-      });
+    return s.replace(REG_HTML_ENCODE, function ($0) {
+      var c = $0.charCodeAt(0);
+      var r = ["&#"];
+      c = c === 0x20 ? 0xa0 : c;
+      r.push(c);
+      r.push(";");
+      return r.join("");
+    });
   }
 
   /**
-  * 转义 html 字符串
-  * @param {string} s
-  */
+   * 转义 html 字符串
+   * @param {string} s
+   */
   function descapeHTML(s) {
-    if (typeof s !== 'string') {
-      return '';
+    if (typeof s !== "string") {
+      return "";
     }
 
-    var ele = document.getElementById('temp-descape-html');
+    var ele = document.getElementById("temp-descape-html");
     if (!ele) {
-      ele = document.createElement('div');
-      ele.id = 'temp-descape-html';
+      ele = document.createElement("div");
+      ele.id = "temp-descape-html";
     }
     ele.innerHTML = s;
     return ele.innerText;
   }
 
   function logInfo(val) {
-    var info = typeof val === 'string' ? val : val.toString();
-    console.log('Log: ' + val)
-    document.getElementById('log-info').innerHTML = 'Log: ' + info;
+    var info = typeof val === "string" ? val : val.toString();
+    console.log("Log: " + val);
+    document.getElementById("log-info").innerHTML = "Log: " + info;
   }
 
   /* ---------- local storage ---------- */
-  var key = 'notes';
+  var key = "notes";
 
   function addItem(item, cb) {
     var list = getList();
     list.push(item);
     localStorage.setItem(key, JSON.stringify(list));
-    cb && cb()
+    cb && cb();
   }
 
   function updateItem(item, cb) {
@@ -397,7 +392,12 @@
       var it = list[i];
       if (it.id == item.id) {
         var date = new Date();
-        list[i] = { id: item.id, val: item.val, time: date.getTime(), datetime: date.format() };
+        list[i] = {
+          id: item.id,
+          val: item.val,
+          time: date.getTime(),
+          datetime: date.format(),
+        };
         break;
       }
     }
@@ -445,20 +445,20 @@
   //   alert('不支持');
   // }
 
-  var databaseName = 'notesDB';
-  var indexName = 'notesIndex';
+  var databaseName = "notesDB";
+  var indexName = "notesIndex";
 
   var request = indexedDBObj.open(databaseName, 1);
   var db;
 
   request.onsuccess = function () {
     db = request.result;
-    logInfo('数据库打开成功');
+    logInfo("数据库打开成功");
     onDBLoad();
   };
 
   request.onerror = function (err) {
-    logInfo('数据库打开报错: ' + err);
+    logInfo("数据库打开报错: " + err);
   };
 
   // 创建 表
@@ -466,39 +466,41 @@
     db = event.target.result;
     var objectStore;
     if (!db.objectStoreNames.contains(indexName)) {
-      objectStore = db.createObjectStore(indexName, { keyPath: 'id' });
-      objectStore.createIndex('val', 'val', { unique: false });
-      objectStore.createIndex('time', 'time', { unique: false });
-      objectStore.createIndex('datetime', 'datetime', { unique: false });
+      objectStore = db.createObjectStore(indexName, { keyPath: "id" });
+      objectStore.createIndex("val", "val", { unique: false });
+      objectStore.createIndex("time", "time", { unique: false });
+      objectStore.createIndex("datetime", "datetime", { unique: false });
     }
     // { id: 1, val: 1, time: Date.now(), datetime: 'datetime' }
-  }
+  };
 
   /**
    * 数据库增加项
-   * @param item 
-   * @param cb 
+   * @param item
+   * @param cb
    */
   function add(item, cb) {
-    var request = db.transaction([indexName], 'readwrite')
+    var request = db
+      .transaction([indexName], "readwrite")
       .objectStore(indexName)
       // .add({ id: 1, name: '张三', age: 24, email: 'zhangsan@example.com' })
       .add(item);
 
     request.onsuccess = function () {
-      cb && cb()
+      cb && cb();
     };
 
     request.onerror = function () {
-      logInfo('数据写入失败');
-    }
+      logInfo("数据写入失败");
+    };
   }
 
   /**
    * 删除数据
    */
   function remove(id, cb) {
-    var request = db.transaction([indexName], 'readwrite')
+    var request = db
+      .transaction([indexName], "readwrite")
       .objectStore(indexName)
       .delete(id);
 
@@ -509,48 +511,49 @@
 
   /**
    * 更新数据
-   * @param item 
-   * @param cb 
+   * @param item
+   * @param cb
    */
   function update(item, cb) {
-    var request = db.transaction([indexName], 'readwrite')
+    var request = db
+      .transaction([indexName], "readwrite")
       .objectStore(indexName)
       .put(item);
 
     request.onsuccess = function () {
-      cb && cb()
+      cb && cb();
     };
 
     request.onerror = function () {
-      logInfo('数据更新失败');
-    }
+      logInfo("数据更新失败");
+    };
   }
 
   /**
    * 数据库 读取单个数据
-   * @param id 
-   * @param cb 
+   * @param id
+   * @param cb
    */
   function read(id, cb) {
     var objectStore = db.transaction(indexName).objectStore(indexName);
     var request = objectStore.get(id);
 
     request.onerror = function () {
-      logInfo('事务失败');
+      logInfo("事务失败");
     };
 
     request.onsuccess = function () {
       if (request.result) {
-        cb && cb(request.result)
+        cb && cb(request.result);
       } else {
-        logInfo('未获得数据记录');
+        logInfo("未获得数据记录");
       }
     };
   }
 
   /**
    * 读取所有数据
-   * @param cb 
+   * @param cb
    */
   function readAll(cb) {
     var objectStore = db.transaction(indexName).objectStore(indexName);
@@ -571,12 +574,12 @@
 
   /**
    * 查找某个值
-   * @param key 
-   * @param val 
-   * @param cb 
+   * @param key
+   * @param val
+   * @param cb
    */
   function findOne(key, val, cb) {
-    var transaction = db.transaction([indexName], 'readonly');
+    var transaction = db.transaction([indexName], "readonly");
     var store = transaction.objectStore(indexName);
     var index = store.index(key);
     var request = index.get(val);
@@ -584,9 +587,194 @@
     request.onsuccess = function (e) {
       var result = e.target.result;
       if (result) {
-        cb && cb(result)
+        cb && cb(result);
       }
+    };
+  }
+
+  // 语雀
+  class YuqueRequest {
+    constructor({ userAgent, token }) {
+      this.userAgent = userAgent || "LP";
+      this.token = token;
+      this.headers = {
+        "Content-Type": "application/json",
+        "User-Agent": this.userAgent,
+        "X-Auth-Token": this.token,
+      };
     }
+    getApi(api) {
+      return `https://www.yuque.com/api/v2/repos/yansong-s4rmt/lp/docs${api || ""
+        }`;
+    }
+    get(slug) {
+      var _this = this;
+      return new Promise(function (resolve, reject) {
+        fetch(_this.getApi(slug || "/note?row=1"), {
+          method: "GET",
+          credentials: "omit", // include, *same-origin, omit
+          headers: _this.headers,
+          redirect: "follow", // manual, *follow, error
+        })
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (data) {
+            resolve(data);
+          })
+          .catch(function (err) {
+            reject(err);
+          });
+      });
+    }
+    getList() {
+      var _this = this;
+      return new Promise(function (resolve, reject) {
+        fetch(_this.getApi(), {
+          method: "GET",
+          credentials: "omit", // include, *same-origin, omit
+          headers: _this.headers,
+          redirect: "follow", // manual, *follow, error
+        })
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (data) {
+            resolve(data);
+          })
+          .catch(function (err) {
+            reject(err);
+          });
+      });
+    }
+    post(data) {
+      // title	标题
+      // slug	文档 Slug
+      // public	0 - 私密，1 - 公开
+      // format	支持 markdown、lake、html，默认为 markdown
+      // body	format 描述的正文内容，最大允许 5MB
+      var _this = this;
+      return new Promise(function (resolve, reject) {
+        fetch(_this.getApi(), {
+          method: "POST",
+          credentials: "omit", // include, *same-origin, omit
+          headers: _this.headers,
+          redirect: "follow", // manual, *follow, error
+          body: JSON.stringify(
+            Object.assign(
+              {
+                title: "Note",
+                slug: "note",
+                public: 0,
+                format: "markdown",
+                body: "",
+              },
+              data
+            )
+          ), // body data type must match "Content-Type" header
+        })
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (data) {
+            resolve(data);
+          })
+          .catch(function (err) {
+            reject(err);
+          });
+      });
+    }
+    put(data, id) {
+      // title	标题
+      // slug	文档 Slug
+      // public	0 - 私密，1 - 公开
+      // body	已发布的正文 Markdown，这个字段必传
+      // _force_asl	如果在页面编辑过文档，那这时文档会转成 lake 格式，如果再用 markdown 无法进行更新，这是需要添加 _force_asl = 1 来确保内容的正确转换。
+      var _this = this;
+      return new Promise(function (resolve, reject) {
+        fetch(_this.getApi(`/${id}`), {
+          method: "PUT",
+          credentials: "omit", // include, *same-origin, omit
+          headers: _this.headers,
+          redirect: "follow", // manual, *follow, error
+          body: JSON.stringify(
+            Object.assign(
+              {
+                title: "Note",
+                slug: "note",
+                public: 0,
+                body: "",
+                _force_asl: 1,
+              },
+              data
+            )
+          ), // body data type must match "Content-Type" header
+        })
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (data) {
+            resolve(data);
+          })
+          .catch(function (err) {
+            reject(err);
+          });
+      });
+    }
+  }
+
+
+  var token = "jUrEGFwQzxypup0uDJRK2LyJOQcMeLVktQpCHpWm";
+  var defaultId = 63815700;
+
+  function getList() {
+    var request = new YuqueRequest({
+      token: token,
+    });
+    request.getList(function (res) {
+      console.log("get: ", res);
+    });
+  }
+
+  function putStr(val, title, id, slug) {
+    var request = new YuqueRequest({
+      token: token,
+    });
+    request.get(slug, function (res) {
+      if (!res) {
+        return;
+      }
+      var data = res.data;
+      var body = data.body;
+      request.put(
+        {
+          body: body + "\n\n" + val,
+          title: title,
+          slug: slug || title.toLowerCase().replace(/ /g, ""),
+        },
+        id || defaultId,
+        function (res) {
+          console.log("put end: ", res);
+        }
+      );
+    });
+  }
+
+  function postStr(val, title) {
+    logInfo(val + title);
+    var request = new YuqueRequest({
+      token: token,
+    });
+    request.post(
+      {
+        body: val,
+        title: title,
+        slug: title.toLowerCase().replace(/ /g, ""),
+      },
+      function (res) {
+        console.log("post end: ", res);
+      }
+    );
   }
 
 </script>
