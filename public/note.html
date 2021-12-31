@@ -120,50 +120,50 @@
 </div>
 <div id="notes-wrap" class="notes-wrap"></div>
 <div id="log-info" class="log-info"></div>
-<div>
+<!-- <div>
   <button id="download-btn">导出</button>
 
   <textarea type="text" id="upload-ipt"></textarea>
   <button id="upload-btn">导入</button>
-</div>
+</div> -->
 <script>
-  var downloadBtn = document.getElementById("download-btn");
-  downloadBtn.addEventListener("click", function () {
-    readNotes(function (list) {
-      var textarea = document.createElement("textarea");
-      textarea.readonly = "readonly";
-      textarea.style.position = "absolute";
-      textarea.style.left = "-9999px";
-      textarea.style.zIndex = "-9999";
-      textarea.value = JSON.stringify(list);
-      document.body.appendChild(textarea);
-      textarea.select();
-      var res = document.execCommand("Copy");
-      if (res) {
-        alert("复制成功");
-      }
-    });
-  });
+  // var downloadBtn = document.getElementById("download-btn");
+  // downloadBtn.addEventListener("click", function () {
+  //   readNotes(function (list) {
+  //     var textarea = document.createElement("textarea");
+  //     textarea.readonly = "readonly";
+  //     textarea.style.position = "absolute";
+  //     textarea.style.left = "-9999px";
+  //     textarea.style.zIndex = "-9999";
+  //     textarea.value = JSON.stringify(list);
+  //     document.body.appendChild(textarea);
+  //     textarea.select();
+  //     var res = document.execCommand("Copy");
+  //     if (res) {
+  //       alert("复制成功");
+  //     }
+  //   });
+  // });
 
-  var uploadIpt = document.getElementById("upload-ipt");
-  var uploadBtn = document.getElementById("upload-btn");
-  uploadBtn.addEventListener("click", function () {
-    try {
-      if (!uploadIpt.value) {
-        return;
-      }
-      var uploadList = JSON.parse(uploadIpt.value);
-      for (let i = 0; i < uploadList.length; i++) {
-        const item = uploadList[i];
-        addNote("", function () {}, item);
-      }
-      renderNoteList();
-      alert('导入成功');
-      uploadIpt.value = '';
-    } catch (error) {
-      alert("数据有问题，请重试");
-    }
-  });
+  // var uploadIpt = document.getElementById("upload-ipt");
+  // var uploadBtn = document.getElementById("upload-btn");
+  // uploadBtn.addEventListener("click", function () {
+  //   try {
+  //     if (!uploadIpt.value) {
+  //       return;
+  //     }
+  //     var uploadList = JSON.parse(uploadIpt.value);
+  //     for (let i = 0; i < uploadList.length; i++) {
+  //       const item = uploadList[i];
+  //       addNote("", function () {}, item);
+  //     }
+  //     renderNoteList();
+  //     alert('导入成功');
+  //     uploadIpt.value = '';
+  //   } catch (error) {
+  //     alert("数据有问题，请重试");
+  //   }
+  // });
   /* 注意。不要使用ES6语法，存在兼容问题！！！ */
   // notes
   var noteTpl =
