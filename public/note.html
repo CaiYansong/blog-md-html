@@ -158,6 +158,8 @@
         addNote("", function () {}, item);
       }
       renderNoteList();
+      alert('导入成功');
+      uploadIpt.value = '';
     } catch (error) {
       alert("数据有问题，请重试");
     }
