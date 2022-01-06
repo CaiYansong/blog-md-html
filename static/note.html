@@ -22,7 +22,7 @@
   id="note-iframe"
   src="https://caiyansong.com/iframe/note-iframe.html"
   frameborder="0"
-  style="width: 300px; height: 60px;border: 1px solid #eee"
+  style="width: 300px; height: 60px; border: 1px solid #eee"
 ></iframe>
 
 <style>
@@ -313,11 +313,15 @@ border: 1px solid; */
 
   /* ---------- postMessage ---------- */
   var client = getUrlParam("client");
-  logInfo(client)
+  logInfo("client: " + client);
   var deviceInfo = undefined;
   var targetUrl = "https://caiyansong.com";
   // message
   var noteIframeWindow = document.getElementById("note-iframe").contentWindow;
+
+  noteIframeWindow.onload = function () {
+    renderNoteList(true);
+  };
 
   window.addEventListener("message", function (e) {
     console.log("main listener", e.origin, e, e.data);
@@ -484,8 +488,8 @@ border: 1px solid; */
   function logInfo(val) {
     var info = typeof val === "string" ? val : val.toString();
     console.log("Log: " + val);
-    var logEle = document.getElementById("log-info")
-    logEle.innerText = logEle.innerText + '\n' + "Log: " + info;
+    var logEle = document.getElementById("log-info");
+    logEle.innerText = logEle.innerText + "\n" + "Log: " + info;
   }
 
   /* ---------- local storage ---------- */
