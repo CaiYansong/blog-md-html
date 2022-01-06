@@ -143,7 +143,6 @@ function getYuque(cb, slug) {
     return;
   }
   request.getList(function (res) {
-    console.log("get: ", res);
     if (res && res.length > 0) {
       request.get(res[0].slug, function (res) {
         cb && cb(res);
@@ -156,7 +155,6 @@ function getYuque(cb, slug) {
 
 function getYuqueList(cb) {
   request.getList(function (res) {
-    console.log("get: ", res);
     cb && cb(res);
   });
 }
@@ -208,7 +206,7 @@ function checkAPostYuqueStr(val, title) {
         if (val === body) {
           return;
         }
-        request.postStr(val, title);
+        request.post(val, title);
       });
     }
   });
