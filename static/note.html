@@ -320,7 +320,7 @@ border: 1px solid; */
   // message
   var noteIframeWindow = document.getElementById("note-iframe").contentWindow;
 
-  noteIframeWindow.onload = function () {
+  document.getElementById("note-iframe").onload = function () {
     logInfo("noteIframeWindow.onload");
     renderNoteList(true);
   };
