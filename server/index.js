@@ -24,8 +24,14 @@ dirs.forEach((baseDir) => {
   handleArticles(baseDir);
 });
 
+const whitelist = ["note-iframe.html"];
+
 const baseFile = getFilesNameSync(staticPath);
 baseFile.forEach((filePath) => {
+  console.log(filePath.replace(staticPath, ""));
+  if (whitelist.includes(filePath.replace(path.join(staticPath, "/"), ""))) {
+    return;
+  }
   handleArticle(filePath, publicPath, true);
 });
 
@@ -66,8 +72,8 @@ function handleArticleMenus() {
   const articles = getFilesNameSync(articlePath, true);
   let str = "<ul>";
   articles.forEach((item) => {
-    const name = path.basename(item).replace(/.md$/i, '.html');
-    const href = item.replace(staticPath, '').replace(/.md$/i, '.html');
+    const name = path.basename(item).replace(/.md$/i, ".html");
+    const href = item.replace(staticPath, "").replace(/.md$/i, ".html");
     str += `<li><a href="${href}" target="_blank">${name}</a></li>\n`;
   });
   str += "</ul>";
