@@ -1,6 +1,6 @@
 var noteContainer = document.getElementById("note-container");
 function logInfo(str) {
-  logEle.innerText = logEle.innerText + "\n" + "Log: " + str;
+  noteContainer.innerText = noteContainer.innerText + "\n" + "Log: " + str;
 }
 
 logInfo("note-iframe init");
