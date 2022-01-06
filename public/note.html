@@ -354,6 +354,7 @@ border: 1px solid; */
   var noteIframeWindow = document.getElementById("note-iframe").contentWindow;
 
   noteIframeWindow.onload = function () {
+    logInfo("noteIframeWindow.onload");
     renderNoteList(true);
   };
 
