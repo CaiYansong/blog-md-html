@@ -8,8 +8,8 @@ function getHeader() {
         <a href="/">首页</a>
         <a href="/article-list">文章</a>
         <a href="/lp">LP</a>
-        <a href="/note.html">Note</a>
-        <a id="hreader-note-link" href="/about.html">关于</a>
+        <a id="hreader-note-link" href="/note.html">Note</a>
+        <a href="/about.html">关于</a>
       </div>
     </div>
     <script>
