@@ -6,7 +6,7 @@ window.addEventListener("message", function (e) {
     return;
   }
   if (e.data && e.data.type === "post") {
-    checkAPostYuqueStr(e.data.str, "" + Date.now());
+    checkAPostYuqueStr(e.data.str, e.data.title || "" + Date.now());
     return;
   }
   if (e.data && e.data.type === "get") {
