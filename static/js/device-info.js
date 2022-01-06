@@ -1,9 +1,11 @@
 try {
-  function getDeviceInfo(cb) {
-    var currentApp = api.require("currentApp");
-    currentApp.deviceInfo(function (ret) {
-      cb(ret);
-    });
+  if (api && api.require && api.require("currentApp")) {
+    function getDeviceInfo(cb) {
+      var currentApp = api.require("currentApp");
+      currentApp.deviceInfo(function (ret) {
+        cb(ret);
+      });
+    }
   }
   /*
   {
