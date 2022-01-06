@@ -66,18 +66,18 @@ YuqueRequest.prototype.request = function (api, type, data, cb) {
     // 数据加载成功
     if (xhr.readyState === 4) {
       // 响应
-      cb(JSON.parse(xhr.response));
+      cb && cb(JSON.parse(xhr.response));
     }
   };
 };
 YuqueRequest.prototype.get = function (slug, cb) {
   this.request(slug || "/note?row=1", "GET", null, function (res) {
-    cb(res);
+    cb && cb(res);
   });
 };
 YuqueRequest.prototype.getList = function (cb) {
   this.request(null, "GET", null, function (res) {
-    cb(res);
+    cb && cb(res);
   });
 };
 YuqueRequest.prototype.post = function (data, cb) {
@@ -100,7 +100,7 @@ YuqueRequest.prototype.post = function (data, cb) {
       data
     ),
     function (res) {
-      cb(res);
+      cb && cb(res);
     }
   );
 };
@@ -124,7 +124,7 @@ YuqueRequest.prototype.put = function (data, id) {
       data
     ),
     function (res) {
-      cb(res);
+      cb && cb(res);
     }
   );
 };
@@ -206,7 +206,9 @@ function checkAPostYuqueStr(val, title) {
         if (val === body) {
           return;
         }
-        request.post(val, title);
+        request.post({ body: val, title: title }, function (res) {
+          console.log("post end: ", res);
+        });
       });
     }
   });
