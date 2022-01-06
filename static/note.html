@@ -311,6 +311,68 @@ border: 1px solid; */
     getItem(id, cb);
   }
 
+  /* ---------- postMessage ---------- */
+  var client = getUrlParam("client");
+  var deviceInfo = undefined;
+  var targetUrl = "https://caiyansong.com";
+  // message
+  var noteIframeWindow = document.getElementById("note-iframe").contentWindow;
+
+  window.addEventListener("message", function (e) {
+    console.log("main listener", e.origin, e, e.data);
+    if (e.origin !== targetUrl) {
+      // 验证消息来源地址
+      return;
+    }
+  });
+
+  function postInfoToIframe(str) {
+    if (!str) {
+      return;
+    }
+    var title = client + "_" + Date.now();
+    if (client && client.toLowerCase() === "for_hlp" && getDeviceInfo) {
+      getDeviceInfo(function (res) {
+        if (res) {
+          title =
+            res.userPhoneName +
+            "_" +
+            res.systemName +
+            "_" +
+            res.systemVersion +
+            "_" +
+            res.phoneModel +
+            "_" +
+            Date.now();
+          deviceInfo = res;
+        }
+        postMessageToIframe(str, title);
+      });
+      return;
+      postMessageToIframe(str, title);
+    }
+  }
+
+  function postMessageToIframe(str, title) {
+    noteIframeWindow.postMessage(
+      {
+        type: "post",
+        str: str,
+        title: title,
+      },
+      targetUrl
+    );
+  }
+
+  function getMessage() {
+    noteIframeWindow.postMessage(
+      {
+        type: "get",
+      },
+      targetUrl
+    );
+  }
+
   /* ---------- 辅助函数 ---------- */
   /**
    * 获取url的参数
@@ -660,69 +722,5 @@ border: 1px solid; */
         cb && cb(result);
       }
     };
-  }
-</script>
-
-<script>
-  var client = getUrlParam("client");
-  var deviceInfo = undefined;
-  var targetUrl = "https://caiyansong.com";
-  // message
-  var noteIframeWindow = document.getElementById("note-iframe").contentWindow;
-  console.log(111, noteIframeWindow);
-
-  window.addEventListener("message", function (e) {
-    console.log("main listener", e.origin, e, e.data);
-    if (e.origin !== targetUrl) {
-      // 验证消息来源地址
-      return;
-    }
-  });
-
-  function postInfoToIframe(str) {
-    if (!str) {
-      return;
-    }
-    var title = client + "_" + Date.now();
-    if (client && client.toLowerCase() === "for_hlp" && getDeviceInfo) {
-      getDeviceInfo(function (res) {
-        if (res) {
-          title =
-            res.userPhoneName +
-            "_" +
-            res.systemName +
-            "_" +
-            res.systemVersion +
-            "_" +
-            res.phoneModel +
-            "_" +
-            Date.now();
-          deviceInfo = res;
-        }
-        postMessageToIframe(str, title);
-      });
-      return;
-      postMessageToIframe(str, title);
-    }
-  }
-
-  function postMessageToIframe(str, title) {
-    noteIframeWindow.postMessage(
-      {
-        type: "post",
-        str: str,
-        title: title,
-      },
-      targetUrl
-    );
-  }
-
-  function getMessage() {
-    noteIframeWindow.postMessage(
-      {
-        type: "get",
-      },
-      targetUrl
-    );
   }
 </script>
