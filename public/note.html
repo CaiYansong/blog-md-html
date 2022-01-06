@@ -50,7 +50,7 @@
   id="note-iframe"
   src="https://caiyansong.com/iframe/note-iframe.html"
   frameborder="0"
-  style="width: 10px; height: 10px"
+  style="width: 300px; height: 60px"
 ></iframe>
 
 <style>
@@ -390,6 +390,7 @@ border: 1px solid; */
       },
       targetUrl
     );
+    logInfo("postMessage end");
   }
 
   function getMessage() {
@@ -510,7 +511,7 @@ border: 1px solid; */
   function logInfo(val) {
     var info = typeof val === "string" ? val : val.toString();
     console.log("Log: " + val);
-    document.getElementById("log-info").innerHTML = "Log: " + info;
+    document.getElementById("log-info").innerText = "Log: " + info;
   }
 
   /* ---------- local storage ---------- */
