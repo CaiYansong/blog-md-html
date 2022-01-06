@@ -1,6 +1,7 @@
 // message start
 var targetUrl = "https://caiyansong.gitee.io";
 window.addEventListener("message", function (e) {
+  console.log(e.data);
   if (e.origin !== targetUrl) {
     // 验证消息来源地址
     return;
@@ -195,6 +196,7 @@ function postYuqueStr(val, title) {
 
 function checkAPostYuqueStr(val, title) {
   request.getList(function (res) {
+    console.log("getList end: ", res);
     if (res && res.data && res.data.length > 0) {
       var list = res.data;
       var lastItem = list[0];
@@ -206,7 +208,7 @@ function checkAPostYuqueStr(val, title) {
         if (val === body) {
           return;
         }
-        postYuqueStr(val, title)
+        postYuqueStr(val, title);
       });
     }
   });
