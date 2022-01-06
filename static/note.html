@@ -22,7 +22,7 @@
   id="note-iframe"
   src="https://caiyansong.com/iframe/note-iframe.html"
   frameborder="0"
-  style="width: 300px; height: 60px"
+  style="width: 300px; height: 60px;border: 1px solid #eee"
 ></iframe>
 
 <style>
@@ -313,6 +313,7 @@ border: 1px solid; */
 
   /* ---------- postMessage ---------- */
   var client = getUrlParam("client");
+  logInfo(client)
   var deviceInfo = undefined;
   var targetUrl = "https://caiyansong.com";
   // message
@@ -483,7 +484,8 @@ border: 1px solid; */
   function logInfo(val) {
     var info = typeof val === "string" ? val : val.toString();
     console.log("Log: " + val);
-    document.getElementById("log-info").innerText = "Log: " + info;
+    var logEle = document.getElementById("log-info")
+    logEle.innerText = logEle.innerText + '\n' + "Log: " + info;
   }
 
   /* ---------- local storage ---------- */

@@ -1,13 +1,15 @@
 var noteContainer = document.getElementById("note-container");
 function logInfo(str) {
-  noteContainer.innerText(str);
+  logEle.innerText = logEle.innerText + "\n" + "Log: " + str;
 }
+
+logInfo("note-iframe init");
 
 // message start
 var targetUrl = "https://caiyansong.gitee.io";
 window.addEventListener("message", function (e) {
   console.log(e.data);
-  logInfo('message', e.data.type + "---" + e.data.str);
+  logInfo("message", e.data.type + "---" + e.data.str);
   if (e.origin !== targetUrl) {
     // 验证消息来源地址
     return;
