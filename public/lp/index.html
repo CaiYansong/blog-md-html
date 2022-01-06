@@ -21,9 +21,14 @@
         <a href="/article-list">文章</a>
         <a href="/lp">LP</a>
         <a href="/note.html">Note</a>
-        <a href="/about.html">关于</a>
+        <a id="hreader-note-link" href="/about.html">关于</a>
       </div>
     </div>
+    <script>
+      // href query
+      var noteLink = document.getElementById("hreader-note-link");
+      noteLink.href = noteLink.href + window.location.search;
+    </script>
   </div>
   <div id="root" class="root">
 <title>LP 目录</title>
@@ -43,25 +48,19 @@
 <ul>
   <li>
     <h1>
-      <a target="_blank" href="/lp/lp.html">
-        相识
-      </a>
+      <a target="_blank" href="/lp/lp.html"> 相识 </a>
     </h1>
   </li>
 
   <li>
     <h1>
-      <a target="_blank" href="/lp/classtable.html">
-        课表
-      </a>
+      <a target="_blank" href="/lp/classtable.html"> 课表 </a>
     </h1>
   </li>
 
   <li>
     <h1>
-      <a target="_blank" href="/note.html">
-        本地记事本
-      </a>
+      <a id="note-link" target="_blank" href="/note.html"> 本地记事本 </a>
     </h1>
   </li>
   <!-- <li>
@@ -74,9 +73,7 @@
 
   <li>
     <h1>
-      <a target="_blank" href="/lp/memory-tool.html">
-        记忆辅助工具
-      </a>
+      <a target="_blank" href="/lp/memory-tool.html"> 记忆辅助工具 </a>
     </h1>
   </li>
 </ul>
@@ -84,13 +81,15 @@
 <iframe src="/lp/classtable.html?iframe=true"></iframe>
 
 <script>
+  // href query
+  var noteLink = document.getElementById("note-link");
+  noteLink.href = noteLink.href + window.location.search;
+
   // ------- 数据 -------
   var AGREE_DATE = "2020-09-14 01:00:00";
 
-
   //  ------- 逻辑 -------
   var agreeTimeEle = document.getElementById("agree-time");
-
 
   /**
    * 根据字符串获取时间戳
@@ -105,32 +104,32 @@
    */
   function getShowDate(param, target, noPre) {
     var leftTime = 0;
-    var pre = '距离现在：';
+    var pre = "距离现在：";
     var now = target || Date.now();
-    if (typeof now === 'string') {
+    if (typeof now === "string") {
       now = getTimeFromStr(now);
     }
-    if (typeof param === 'number') {
+    if (typeof param === "number") {
       leftTime = now - param;
     }
-    if (typeof param === 'string') {
+    if (typeof param === "string") {
       leftTime = now - getTimeFromStr(param);
     }
     if (leftTime < 0) {
       leftTime = Math.abs(leftTime);
-      pre = '距离开始：'
+      pre = "距离开始：";
     }
-    if (typeof param === 'object') {
-      var start = getTimeFromStr(param.startTime)
+    if (typeof param === "object") {
+      var start = getTimeFromStr(param.startTime);
       var end = getTimeFromStr(param.endTime);
       if (now < start) {
         leftTime = Math.abs(now - start);
-        pre = '距离开始：'
+        pre = "距离开始：";
       } else if (now > end) {
         leftTime = now - end;
       } else {
         leftTime = Math.abs(now - end);
-        pre = '距离结束：'
+        pre = "距离结束：";
       }
     }
     var days = 0;
@@ -163,7 +162,17 @@
       leftTime = leftTime % secondTime;
     }
 
-    return (noPre ? '' : pre) + days + "天" + hours + "时" + minutes + "分" + seconds + "秒";
+    return (
+      (noPre ? "" : pre) +
+      days +
+      "天" +
+      hours +
+      "时" +
+      minutes +
+      "分" +
+      seconds +
+      "秒"
+    );
   }
 
   /**
@@ -178,8 +187,8 @@
   }
 
   showTime();
-
 </script>
+
   </div>
   <div id="footer" class="footer">
     <div class="footer-info">
