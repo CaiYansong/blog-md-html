@@ -28,7 +28,6 @@ const whitelist = ["note-iframe.html"];
 
 const baseFile = getFilesNameSync(staticPath);
 baseFile.forEach((filePath) => {
-  console.log(filePath.replace(staticPath, ""));
   if (whitelist.includes(filePath.replace(path.join(staticPath, "/"), ""))) {
     return;
   }
@@ -78,7 +77,6 @@ function handleArticleMenus() {
   });
   str += "</ul>";
   const targetPath = path.join(publicPath, "./article-list.html");
-  console.log(targetPath);
   writeFileSync(targetPath, getPage(str));
 }
 
