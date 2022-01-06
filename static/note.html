@@ -320,16 +320,14 @@ border: 1px solid; */
   // message
   var noteIframeWindow = document.getElementById("note-iframe").contentWindow;
 
-  document.getElementById("note-iframe").onload = function () {
-    logInfo("noteIframeWindow.onload");
-    renderNoteList(true);
-  };
-
   window.addEventListener("message", function (e) {
     console.log("main listener", e.origin, e, e.data);
     if (e.origin !== targetUrl) {
       // 验证消息来源地址
       return;
+    }
+    if (e.data && e.data.type === "saveList") {
+      renderNoteList(true);
     }
   });
 
