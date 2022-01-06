@@ -206,9 +206,7 @@ function checkAPostYuqueStr(val, title) {
         if (val === body) {
           return;
         }
-        request.post({ body: val, title: title }, function (res) {
-          console.log("post end: ", res);
-        });
+        postYuqueStr(val, title)
       });
     }
   });
