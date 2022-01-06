@@ -271,7 +271,8 @@ border: 1px solid; */
   }
 
   function renderNoteList(remoteSave) {
-    readNotes(function (list) {
+    readNotes(function (res) {
+      var list = (res || []).reverse();
       var html = "";
       list &&
         list.forEach &&
@@ -330,7 +331,10 @@ border: 1px solid; */
 
   function readNotes(cb) {
     if (hasIndexedDB) {
-      readAll(cb);
+      var res = readAll(cb);
+      if (res === false) {
+        getList(cb);
+      }
       return;
     }
     getList(cb);
@@ -517,8 +521,13 @@ border: 1px solid; */
 
   request.onsuccess = function () {
     db = request.result;
-    logInfo("数据库打开成功");
-    onDBLoad();
+    if (db) {
+      hasIndexedDB = true;
+      logInfo("数据库打开成功");
+      onDBLoad();
+    } else {
+      hasIndexedDB = false;
+    }
   };
 
   request.onerror = function (err) {
@@ -544,6 +553,9 @@ border: 1px solid; */
    * @param cb
    */
   function add(item, cb) {
+    if (!db) {
+      return;
+    }
     var request = db
       .transaction([indexName], "readwrite")
       .objectStore(indexName)
@@ -563,6 +575,9 @@ border: 1px solid; */
    * 删除数据
    */
   function remove(id, cb) {
+    if (!db) {
+      return;
+    }
     var request = db
       .transaction([indexName], "readwrite")
       .objectStore(indexName)
@@ -579,6 +594,9 @@ border: 1px solid; */
    * @param cb
    */
   function update(item, cb) {
+    if (!db) {
+      return;
+    }
     var request = db
       .transaction([indexName], "readwrite")
       .objectStore(indexName)
@@ -599,6 +617,9 @@ border: 1px solid; */
    * @param cb
    */
   function read(id, cb) {
+    if (!db) {
+      return;
+    }
     var objectStore = db.transaction(indexName).objectStore(indexName);
     var request = objectStore.get(id);
 
@@ -620,6 +641,9 @@ border: 1px solid; */
    * @param cb
    */
   function readAll(cb) {
+    if (!db) {
+      return false;
+    }
     var objectStore = db.transaction(indexName).objectStore(indexName);
 
     var arr = [];
@@ -643,6 +667,9 @@ border: 1px solid; */
    * @param cb
    */
   function findOne(key, val, cb) {
+    if (!db) {
+      return;
+    }
     var transaction = db.transaction([indexName], "readonly");
     var store = transaction.objectStore(indexName);
     var index = store.index(key);
