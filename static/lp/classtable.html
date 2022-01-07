@@ -1,57 +1,54 @@
 <title>LP 课表</title>
 
 <style>
-  body {}
-
   .current-time {
     color: red;
   }
-
   table,
   table tr th,
   table tr td {
     border: 1px solid #999;
   }
-
   table {
     margin-bottom: 20px;
   }
-
-  tr {}
-
   td {
     padding: 0 10px;
     white-space: pre-wrap;
   }
-
   del {
     color: #ccc;
   }
-
   button {
     margin-bottom: 20px;
   }
-
-
   td.info {
     min-width: 150px;
   }
-
   td.order {
     min-width: 70px;
   }
-
   td.time {
     min-width: 90px;
   }
-
   a,
   button {
     font-size: 20px;
   }
-
   .not-start {
     color: #999;
+  }
+  .iframe-content {
+    font-size: 20px;
+    margin: 0;
+    padding: 0;
+  }
+  .iframe-content .root {
+    max-width: 1200px;
+    width: 100%;
+    padding: 0 20px;
+    margin: 0 auto;
+    box-sizing: border-box;
   }
 </style>
 <h2 id="current-time" class="current-time"></h2>
@@ -69,8 +66,16 @@
 <button id="all-btn">点击查看完整课表</button>
 <div id="all-table"></div>
 
-<div><a href="https://jwgls.webvpn.jmu.edu.cn/Student/default.aspx">教务系统 课表 链接</a></div>
-<div><a href="http://jwxt.jmu.edu.cn/student/for-std/course-table">教务管理信息系统 课表 链接</a></div>
+<div>
+  <a href="https://jwgls.webvpn.jmu.edu.cn/Student/default.aspx"
+    >教务系统 课表 链接</a
+  >
+</div>
+<div>
+  <a href="http://jwxt.jmu.edu.cn/student/for-std/course-table"
+    >教务管理信息系统 课表 链接</a
+  >
+</div>
 
 <script>
   // 数据
@@ -92,7 +97,13 @@
   var timetable = [
     // 周一
     [
-      [{ info: "中国古代文学3\n新师0312 黄海蓉\n1~16周 1、2节", start: 1, end: 16 }],
+      [
+        {
+          info: "中国古代文学3\n新师0312 黄海蓉\n1~16周 1、2节",
+          start: 1,
+          end: 16,
+        },
+      ],
       [{ info: "文学概论\n新师0312 谢慧英\n1~16周 3、4节", start: 1, end: 16 }],
       "",
       "",
@@ -101,7 +112,13 @@
     // 周二
     [
       "",
-      [{ info: "外国文学1\n新师0312 曾丽华\n1~16周 3、4节", start: 1, end: 16 }],
+      [
+        {
+          info: "外国文学1\n新师0312 曾丽华\n1~16周 3、4节",
+          start: 1,
+          end: 16,
+        },
+      ],
       "",
       "",
       [
@@ -122,14 +139,26 @@
     // 周三
     [
       "",
-      [{ info: "《诗经》导读\n建发0302 刘利侠\n1~16周 3、4节", start: 1, end: 16 }],
+      [
+        {
+          info: "《诗经》导读\n建发0302 刘利侠\n1~16周 3、4节",
+          start: 1,
+          end: 16,
+        },
+      ],
       "",
       "",
       "",
     ],
     // 周四
     [
-      [{ info: "语言学概论\n新师0312 吴光辉\n1~16周 1、2节", start: 1, end: 16 }],
+      [
+        {
+          info: "语言学概论\n新师0312 吴光辉\n1~16周 1、2节",
+          start: 1,
+          end: 16,
+        },
+      ],
       [
         {
           info: "中国古典小说戏曲导读\n新师0312 范德怡\n1~16周 3、4节",
@@ -137,7 +166,13 @@
           end: 16,
         },
       ],
-      [{ info: "中国古代文学3\n新师0312 黄海蓉\n1~16周 5、6节", start: 1, end: 16 }],
+      [
+        {
+          info: "中国古代文学3\n新师0312 黄海蓉\n1~16周 5、6节",
+          start: 1,
+          end: 16,
+        },
+      ],
       "",
       "",
     ],
@@ -150,7 +185,13 @@
           end: 8,
         },
       ],
-      [{ info: "西方文化概论\n新师0312 曾丽华\n1~16周 3、4节", start: 1, end: 16 }],
+      [
+        {
+          info: "西方文化概论\n新师0312 曾丽华\n1~16周 3、4节",
+          start: 1,
+          end: 16,
+        },
+      ],
       "",
       "",
       "",
@@ -185,7 +226,6 @@
     // 渲染时间
     showDate(date);
 
-
     showCurrentWeek(date);
     showCurrentTimetable(contentTableEle, day);
     showTomorrowTimetable(day);
@@ -194,7 +234,8 @@
 
   function showCurrentWeek(date) {
     var currentWeek = getWeeks(startDate, date);
-    currentWeekEle.innerHTML = currentWeek > 0 ? `目前是 第${currentWeek}周` : '还未开学';
+    currentWeekEle.innerHTML =
+      currentWeek > 0 ? `目前是 第${currentWeek}周` : "还未开学";
   }
 
   function showDate(date) {
@@ -239,8 +280,9 @@
     currentData &&
       currentData.forEach((it, idx) => {
         var timeInfo = times[idx];
-        html += `<tr><td class="order">${timeInfo.label}</td><td class="time">${timeInfo.time
-          }</td><td class="info">${renderCourse(it, date)}</td></tr>`;
+        html += `<tr><td class="order">${timeInfo.label}</td><td class="time">${
+          timeInfo.time
+        }</td><td class="info">${renderCourse(it, date)}</td></tr>`;
       });
     html += "</table>";
     ele.innerHTML = html;
@@ -263,11 +305,12 @@
       // 周几 对应的课程
       for (var i = 0; i < 7; i++) {
         var currentData = timetable[i][idx];
-        var str = '';
-        currentData && currentData.forEach(it => {
-          str += (str ? '<br />' : '');
-          str += it.info;
-        });
+        var str = "";
+        currentData &&
+          currentData.forEach((it) => {
+            str += str ? "<br />" : "";
+            str += it.info;
+          });
         html += `<td class="info">${str}</td>`;
       }
       html += "</tr>";
@@ -395,12 +438,18 @@
 <script>
   window.onload = function () {
     // iframe 里面删除 header & footer
-    if (window.location.search.indexOf('?iframe=true') >= 0 || window.location.search.indexOf('&iframe=true') >= 0) {
-      var header = document.getElementById('header')
+    if (
+      window.location.search.indexOf("?iframe=true") >= 0 ||
+      window.location.search.indexOf("&iframe=true") >= 0
+    ) {
+      var header = document.getElementById("header");
       header && header.parentNode.removeChild(header);
-      var footer = document.getElementById('footer');
+      var footer = document.getElementById("footer");
       console.log(footer);
       footer && footer.parentNode.removeChild(footer);
+
+      // 添加 class 做样式兼容
+      document.body.className = document.body.className + " iframe-content";
     }
-  }
+  };
 </script>
