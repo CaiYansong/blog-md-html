@@ -112,7 +112,7 @@ border: 1px solid; */
   var client = getUrlParam("client");
 
   /* ---------- 生成用户标识 start ---------- */
-  var username = getUser();
+  var username = getUsername();
   if (!username) {
     username = (client || "note").toLowerCase() + "_" + Date.now();
     setUsername(username);
