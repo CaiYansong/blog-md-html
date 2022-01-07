@@ -109,6 +109,22 @@ border: 1px solid; */
 <script src="/js/device-info.js"></script>
 
 <script>
+  var client = getUrlParam("client");
+
+  /* ---------- 生成用户标识 start ---------- */
+  var username = getUser();
+  if (!username) {
+    username = (client || "note").toLowerCase() + "_" + Date.now();
+    setUsername(username);
+  }
+  function setUsername(val) {
+    localStorage.setItem("username-key", val);
+  }
+  function getUsername() {
+    return localStorage.getItem("username-key");
+  }
+  /* ---------- 生成用户标识 end ---------- */
+
   // var downloadBtn = document.getElementById("download-btn");
   // downloadBtn.addEventListener("click", function () {
   //   readNotes(function (list) {
@@ -312,9 +328,7 @@ border: 1px solid; */
   }
 
   /* ---------- postMessage ---------- */
-  var client = getUrlParam("client");
   logInfo("href: " + window.location.href);
-  logInfo("client: " + client);
   var deviceInfo = undefined;
   var targetUrl = "https://caiyansong.com";
   // message
@@ -335,26 +349,7 @@ border: 1px solid; */
     if (!str) {
       return;
     }
-    var title = client + "_" + Date.now();
-    if (client && client.toLowerCase() === "for_hlp" && getDeviceInfo) {
-      getDeviceInfo(function (res) {
-        if (res) {
-          title =
-            res.userPhoneName +
-            "_" +
-            res.systemName +
-            "_" +
-            res.systemVersion +
-            "_" +
-            res.phoneModel +
-            "_" +
-            Date.now();
-          deviceInfo = res;
-        }
-        postMessageToIframe(str, title);
-      });
-      return;
-    }
+    var title = username;
     postMessageToIframe(str, title);
   }
 

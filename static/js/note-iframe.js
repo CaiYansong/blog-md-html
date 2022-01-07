@@ -8,7 +8,6 @@ logInfo("note-iframe init");
 // message start
 var targetUrl = "https://caiyansong.gitee.io";
 window.addEventListener("message", function (e) {
-  console.log(e.data);
   logInfo("message", e.data.type + "---" + e.data.str);
   if (e.origin !== targetUrl) {
     // 验证消息来源地址
@@ -209,21 +208,22 @@ function postYuqueStr(val, title) {
 }
 
 function checkAPostYuqueStr(val, title) {
-  request.getList(function (res) {
+  getYuqueList(function (res) {
     console.log("getList end: ", res);
     if (res && res.data && res.data.length > 0) {
+      var item = null;
       var list = res.data;
-      var lastItem = list[0];
-      request.get(lastItem.slug, function (res) {
-        if (!(res && res.data)) {
-          return;
+      for (let i = 0; i < list.length; i++) {
+        var temp = list[i];
+        if (temp && temp.slug === title.toLowerCase().replace(/ /g, "")) {
+          item = list[i];
         }
-        var body = res.data.body;
-        if (val === body) {
-          return;
-        }
+      }
+      if (item) {
+        putYuqueStr(val, title, item.id, item.slug);
+      } else {
         postYuqueStr(val, title);
-      });
+      }
     }
   });
 }
