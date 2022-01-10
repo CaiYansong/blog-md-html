@@ -281,7 +281,7 @@ border: 1px solid; */
   };
 
   function onDBLoad() {
-    renderNoteList(true);
+    renderNoteList();
   }
 
   function renderNoteList(remoteSave) {
@@ -372,9 +372,6 @@ border: 1px solid; */
     if (e.origin !== targetUrl) {
       // 验证消息来源地址
       return;
-    }
-    if (e.data && e.data.type === "saveList") {
-      renderNoteList(true);
     }
   });
 

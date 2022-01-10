@@ -39,12 +39,6 @@ function postMessageToMain(data) {
     window.parent.postMessage(data, targetUrl);
   }
 }
-
-window.onload = function () {
-  postMessageToMain({
-    type: "saveList",
-  });
-};
 // message end
 
 // 语雀
