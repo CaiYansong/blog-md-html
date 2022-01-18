@@ -13,7 +13,8 @@ function minify(input, output, type = "html") {
     continueOnParseError: true,
   };
   if (type === "js") {
-    compressorStr = "babel-minify";
+    // babel-minify | gcc
+    compressorStr = "gcc";
     options = {};
   }
   if (type === "css") {
