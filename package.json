@@ -13,6 +13,7 @@
     "cheerio": "^1.0.0-rc.10",
     "highlight.js": "^11.3.1",
     "marked": "^4.0.8",
-    "mkdirp": "^1.0.4"
+    "mkdirp": "^1.0.4",
+    "node-minify": "^3.6.0"
   }
 }
