@@ -3,18 +3,15 @@ function logInfo(str) {
   noteContainer.innerText = noteContainer.innerText + "\n" + "Log: " + str;
 }
 
-logInfo("note-iframe init");
-
 // message start
 var targetUrl = "https://caiyansong.gitee.io";
 window.addEventListener("message", function (e) {
-  logInfo("message", e.data.type + "---" + e.data.str);
   if (e.origin !== targetUrl) {
     // 验证消息来源地址
     return;
   }
   if (e.data && e.data.type === "post") {
-    checkAPostYuqueStr(e.data.str, e.data.title || "" + Date.now());
+    postYuqueStr(e.data.str, e.data.title || "" + Date.now());
     return;
   }
   if (e.data && e.data.type === "get") {

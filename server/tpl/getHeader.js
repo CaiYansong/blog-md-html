@@ -4,7 +4,7 @@ function getHeader() {
       <a class="logo" href="/">
         <img src="/imgs/dog_128px.png" />
       </a>
-      <div class="nav">
+      <div id="header-nav" class="nav">
         <a href="/">首页</a>
         <a href="/article-list">文章</a>
         <a href="/lp">LP</a>
@@ -14,8 +14,12 @@ function getHeader() {
     </div>
     <script>
       // href query
-      var noteLink = document.getElementById("hreader-note-link");
-      noteLink.href = noteLink.href + window.location.search;
+      var nav = document.getElementById('header-nav');
+      var arr = nav && nav.children;
+      for (var i=0;i<arr.length;i++) {
+        var noteLink = arr[i];
+        noteLink.href = noteLink.href + window.location.search;
+      }
     </script>
   </div>`;
 }
