@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>客观性能</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=0.5">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta property="article:author" content="蔡延松">
+  <meta property="article:tag" content="蔡延松 延松 cys YansongCai caiyansong CaiYansong">
+  <link rel="icon" href="/imgs/dog.ico">
+  <link rel="stylesheet" href="/css/index.css">
+</head>
+<body>
+  <div id="header" class="header">
+    <div class="header-wrap">
+      <a class="logo" href="/">
+        <img src="/imgs/dog_128px.png" />
+      </a>
+      <div class="nav">
+        <a href="/">首页</a>
+        <a href="/article-list">文章</a>
+        <a href="/lp">LP</a>
+        <a id="hreader-note-link" href="/note.html">Note</a>
+        <a href="/about.html">关于</a>
+      </div>
+    </div>
+    <script>
+      // href query
+      var noteLink = document.getElementById("hreader-note-link");
+      noteLink.href = noteLink.href + window.location.search;
+    </script>
+  </div>
+  <div id="root" class="root">
+<h2 id="todo：">TODO：</h2>
+<p><a target="_blank" href="https://mp.weixin.qq.com/s/NabIRQt_L1XRkC9DN4eKsw">https://mp.weixin.qq.com/s/NabIRQt_L1XRkC9DN4eKsw</a></p>
+<p>Web 性能包括站在 开发者视角的可客观度量的性能 和 站在用户视角的主观的可感知的性能。</p>
+<h1 id="客观性能">客观性能</h1>
+<p>客观性能是从发出请求开始，到下载、解析和执行所有资源以及最终绘制的整个过程的时间度量。</p>
+<ul>
+<li>加载性能<ul>
+<li>缓存策略</li>
+<li>加载策略</li>
+<li>网络优化</li>
+<li>静态资源优化</li>
+</ul>
+</li>
+<li>渲染性能<ul>
+<li>Script - 优化 Javascript 的执行效率</li>
+<li>Style - 降低样式计算和复杂度</li>
+<li>Layout - 避免大规模、复杂的布局</li>
+<li>Paint - 简化复杂度，减少 paint 区域</li>
+<li>Composite - 利用 Layer 合成</li>
+</ul>
+</li>
+</ul>
+<h2 id="目标">目标</h2>
+<h4 id="减少加载时间">减少加载时间</h4>
+<p>页面<strong>正常加载</strong>过程中所需的文件需要多长时间才能下载到用户的计算机上，这往往会受到网络、文件大小、文件数量以及其他因素的影响。一般策略是使文件尽可能小，尽可能减少HTTP请求的数量，或采用<strong>预加载</strong>策略提前加载使文件更快地可用。</p>
+<h4 id="使网站尽快可用">使网站尽快可用</h4>
+<p>我们可以以合理的顺序加载网站资源，以便用户能够真正快速地开始使用。当用户执行主要任务时，任何其他资源都可以放在后台继续加载，或者只在实际需要时加载资源，即<strong>延迟加载</strong>。例如当访问页面时可以优先加载首屏需要的资源，其他资源可以延迟加载。</p>
+<h4 id="平滑性和交互性">平滑性和交互性</h4>
+<p>在让应用程序感觉流畅方面有很多最佳实践，例如使用 CSS 动画而不是 JavaScript 来制作动画，以及最小化由于 DOM 的更改而导致UI需要的重绘次数。</p>
+<h2 id="优化方案">优化方案</h2>
+<ol>
+<li>动静分离</li>
+<li>文件合并（减少http请求数量）</li>
+<li>代码压缩 （减少文件资源大小，压缩html、js和css文件）</li>
+<li>拆包（稳定性高的组件进行 组件缓存）</li>
+<li>使用缓存（页面缓存、组件缓存）</li>
+<li>使用cdn托管资源</li>
+<li>懒加载和预加载</li>
+<li>图片优化</li>
+<li>优化渲染逻辑（重绘与回流）</li>
+<li>节流 &amp; 防抖</li>
+<li>反向链接，网站外链接优化</li>
+<li>去VM化</li>
+<li>阉割版 WebView</li>
+</ol>
+<h3 id="动静分离">动静分离</h3>
+<p>静态渲染：header + 骨架屏 + footer + 必须的数据<br>动态渲染：其余部分</p>
+<h3 id="文件合并">文件合并</h3>
+<ol>
+<li>合并js脚本文件</li>
+<li>合并css样式文件</li>
+<li>合并css引用的图片，使用sprite雪碧图</li>
+<li>合并请求</li>
+</ol>
+<h3 id="代码压缩">代码压缩</h3>
+<p>html、js、css压缩</p>
+<h4 id="html-的压缩">html 的压缩</h4>
+<ul>
+<li>使用在线网站进行压缩(走构建工具多，公司级在线网站手动压缩小)</li>
+<li>node.js提供了 html-minifier 工具</li>
+<li>后端模板引擎渲染压缩</li>
+</ul>
+<h4 id="css的压缩">css的压缩</h4>
+<ul>
+<li>无效代码删除<ul>
+<li>注释、无效字符</li>
+</ul>
+</li>
+<li>css语义合并</li>
+</ul>
+<p><strong>css压缩的方式</strong></p>
+<ul>
+<li>使用在线网站进行压缩</li>
+<li>使用 html-minifier 对html中的css进行压缩</li>
+<li>使用 clean-css 对css进行压缩</li>
+</ul>
+<h4 id="js的压缩与混淆">js的压缩与混淆</h4>
+<ul>
+<li>无效字符的删除<ul>
+<li>空格、注释、回车等</li>
+</ul>
+</li>
+<li>剔除注释</li>
+<li>代码语意的缩减和优化<ul>
+<li>变量名缩短(<code>a</code>,<code>b</code>)等</li>
+</ul>
+</li>
+<li>代码保护（混淆）<ul>
+<li>前端代码是透明的，客户端代码用户是可以直接看到的，可以轻易被窥探到逻辑和漏洞</li>
+</ul>
+</li>
+</ul>
+<p><strong>js压缩的方式</strong></p>
+<ul>
+<li>使用在线网站进行压缩</li>
+<li>使用 html-minifier 对html中的js进行压缩</li>
+<li>使用 uglifyjs2 对js进行压缩</li>
+</ul>
+<h4 id="gzip--bbr">GZIP &amp; BBR</h4>
+<p>GZIP 压缩使用 <a target="_blank" href="https://github.com/rccoder/blog/issues/32">Deflate</a> 能有效压缩文本资源的大小，在现代浏览器中，对 GZIP 的支持也是非常良好。值的注意的是，GZIP 的压缩并不是压的越小越好，太小会产生压缩性能的问题。<br>传统 TCP 使用的是基于丢包的拥塞控制算法，但并不是所有的丢包都是网络堵塞所导致的，为此 Google 开发了 BBR 拥塞控制算法，能有效提升服务器的吞吐量，如果服务器支持的话，可以开启 BBR 来加快网络传输。</p>
+<h3 id="拆包">拆包</h3>
+<p>首屏和其他部分分离。<br>公共组件库分离。<br>组件分离主要针对于app web。公共组件库提前缓存到app中，提高页面的加载速度。</p>
+<h3 id="使用缓存">使用缓存</h3>
+<h4 id="页面缓存">页面缓存</h4>
+<h4 id="组件缓存">组件缓存</h4>
+<p>在 SPA 网站中，加载 bundle 大致上可以分为两份：</p>
+<ol>
+<li>所有的组件代码和业务代码打到一起，和业务代码一起输出</li>
+<li>组件代码在组件内部各自打包，业务代码打包的时候 external 掉组件代码，最后 combo 到一起输出。</li>
+</ol>
+<p>针对第二种情况，可以利用 LocalStorage 等单独缓存组件代码（带上版本号），在端侧实现一个 Combo 的机制（有 Cache 取 Cache，没 Cache Fetch），这样一来，就能让一个网站的多个页面享受同份缓存，让之第一次也能非常快速的访问。</p>
+<h4 id="字体、图片等资源缓存">字体、图片等资源缓存</h4>
+<h4 id="善用-localstorage">善用 LocalStorage</h4>
+<p>在一些场景下，每次用户进入时数据的变化不会太大，比如不怎么更新的个人博客页面。这个时候就可以使用 LocalStorage 去做 HTML 的缓存，页面进入的时候直接从 Storage 中获取缓存，然后 append 到页面上，等接口数据回来之后，再 Diff 做更新。<br>在新版本浏览器中，可以用 indexedDB 等代替 LocalStorage。</p>
+<h3 id="使用cdn托管资源">使用cdn托管资源</h3>
+<p>cdn 预解析</p>
+<h3 id="懒加载和预加载">懒加载和预加载</h3>
+<h4 id="懒加载">懒加载</h4>
+<p>组件和图片等只有即将进入可视区域才进行加载。并发加载的资源过多会阻塞js的加载，影响网站的正常使用。<br><code>img src</code>被设置之后，<code>webkit</code>解析到之后才去请求这个资源。所以我们希望图片到达可视区域之后，<code>img src</code>才会被设置进来，没有到达可视区域前并不现实真正的<code>src</code>，而是类似一个<code>1px</code>的占位符。</p>
+<h4 id="预加载">预加载</h4>
+<p>preload \ prefetch</p>
+<ul>
+<li>图片等静态资源在使用之前的提前请求</li>
+<li>资源使用到时能从缓存中加载，提升用户体验</li>
+<li>页面展示的依赖关系维护</li>
+</ul>
+<h3 id="图片优化">图片优化</h3>
+<h4 id="图片编类型选择和图片压缩">图片编类型选择和图片压缩</h4>
+<p>PC和Android使用webp格式图片。</p>
+<h4 id="sprites-雪碧图">Sprites 雪碧图</h4>
+<p>把小图标合并在一起</p>
+<h3 id="优化渲染逻辑（重绘与回流）">优化渲染逻辑（重绘与回流）</h3>
+<h4 id="重绘与回流">重绘与回流</h4>
+<ul>
+<li><p>尽量避免使用触发<code>回流</code>、<code>重绘</code>的<code>CSS</code>属性</p>
+</li>
+<li><p>将<code>重绘</code>、<code>回流</code>的影响范围限制在单独的图层(<code>layers</code>)之内</p>
+</li>
+<li><p>图层合成过程中消耗很大页面性能，这时候需要平衡考虑重绘回流的性能消耗</p>
+</li>
+<li><p>用<code>translate</code>替代<code>top</code>属性</p>
+<ul>
+<li><code>top</code>会触发<code>layout</code>，但<code>translate</code>不会</li>
+</ul>
+</li>
+<li><p>用<code>opacity</code>代替<code>visibility</code></p>
+<ul>
+<li><code>opacity</code>不会触发重绘也不会触发回流，只是改变图层<code>alpha</code>值，但是必须要将这个图片独立出一个图层</li>
+<li><code>visibility</code>会触发重绘</li>
+</ul>
+</li>
+<li><p>不要一条一条的修改<code>DOM</code>的样式，预先定义好<code>class</code>，然后修改<code>DOM</code>的<code>className</code></p>
+</li>
+<li><p><code>把DOM</code>离线后修改，比如：先把<code>DOM</code>给<code>display:none</code>（有一次<code>reflow</code>），然后你修改100次，然后再把它显示出来</p>
+</li>
+<li><p>不要把<code>DOM</code>节点的属性值放在一个循环里当成循环的变量</p>
+<ul>
+<li><code>offsetHeight</code>、<code>offsetWidth</code>每次都要刷新缓冲区，缓冲机制被破坏</li>
+<li>先用变量存储下来</li>
+</ul>
+</li>
+<li><p>不要使用<code>table</code>布局，可能很小的一个小改动会造成整个<code>table</code>的重新布局</p>
+<ul>
+<li><code>div</code>只会影响后续样式的布局</li>
+</ul>
+</li>
+<li><p>动画实现的速度的选择</p>
+<ul>
+<li>选择合适的动画速度</li>
+<li>根据<code>performance</code>量化性能优化</li>
+</ul>
+</li>
+<li><p>对于动画新建图层</p>
+<ul>
+<li>启用<code>gpu</code>硬件加速(并行运算)，<code>gpu加速</code>意味着数据需要从<code>cpu</code>走总线到<code>gpu</code>传输，需要考虑传输损耗.<ul>
+<li><code>transform:translateZ(0)</code></li>
+<li><code>transform:translate3D(0)</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="反向链接，网站外链接优化">反向链接，网站外链接优化</h3>
+<h3 id="节流--防抖">节流 &amp; 防抖</h3>
+<p>在 Web 中，像 Scroll 这种事件，在界面操作中触发的频率是非常之高的。涉想这样的一种场景：用户往下滑动网页，当滑动距离超过 1000px 的时候，右下角展现一个 回到顶部 的按钮。想当然的操作就是监听 Scroll 事件，当值大于 1000px 的时候展示 按钮，但因为 Scroll 的高频率触发，尤其在移动端这样做就能感觉到比较明显的性能问题了，如果我们对其加个操作 —— 1s 内检测函数只触发 1 次 或者在用户停下来的时候再去检测位置。这样页面整体就会流畅很多了，相对应的两个操作就是 节流 和 防抖。<br>在 Web 开发过程中，对于这种高频次触发的事情，合理的进程节流和防抖能在很大程度上增加页面流产度。</p>
+<h3 id="阉割版-webview">阉割版 WebView</h3>
+<p>WebView 因为各种历史原因，“慢” 一直徘徊在他的左右。去定制 WebView，甚至去实现一层上层 DSL，只保存比较优秀的部分，也能在限制部分场景的同时去提升页面性能。<br>最典型的设计就是微信小程序了，阉割版的 WebView + Cache 机制，很难让人会觉得这是一个 WebAPP</p>
+<h3 id="去vm化">去VM化</h3>
+<p><strong>现状</strong></p>
+<ul>
+<li>前端和服务端职责不明确，VM的存在处于一个灰色地带，整体效率低下。</li>
+<li>React等浏览器端渲染的技术方案完全可以做到动态数据和VM分离，前端完全可以脱离对服务端的依赖单独开发。</li>
+<li>目前页面获取数据和VM模板的拼装是在服务端完成，两者是串行的状态，在性能上不能做到最优。</li>
+</ul>
+<p><strong>优化方案</strong><br>  页面layout直接发布上CDN，可以明显的减少白屏等待。通过 ServiceWorker 的预取数据, 达到模板和数据并行从而优化首屏。<br>现有的方案是页面在跳转之后，服务端获取数据和页面的拼装都是Server端完成，在这期间用户的感知是一直白屏。<br>升级之后的方案是用户从CDN获取到layout后直接展示给用户，白屏等待时间会明显的提升。同时在浏览器中的ServiceWoker 会触发加载预加载首屏的数据。从之前的串行变成并行，从而达到提升首屏。</p>
+<h1 id="感知性能">感知性能</h1>
+<p>而对于用户来说，用户的<strong>感知性能</strong>才是最重要的。感知性能是基于加载时间和页面响应性的一个主观指标，衡量一个网站在用户看来有多快，即当网站加载到足以让用户相信它已经加载完毕并且可交互的时候。<br>感知性能是用户的视角，而不是衡量标准。有一些前端优化技术可以提高可感知的性能，让文档内容能更快的呈现。例如：</p>
+<ul>
+<li>向脚本添加 defer 或 async 属性，或者将脚本放在文档的末尾；</li>
+<li>将 CSS 放在文档的头部和提前加载字体文件，可以防止页面闪动；</li>
+<li>只加载首屏需要的资源，延迟加载首屏不需要的资源；</li>
+</ul>
+<p>即使一个页面加载或一个操作响应需要很长时间，也可以通过一些方式让用户觉得没有那么慢。例如：</p>
+<ul>
+<li>在页面加载过程中展示<strong>打底图、骨架屏</strong>，从打底图、骨架屏到内容渲染完成的过程是相对连贯的过程，用户不会因为等待而焦躁；</li>
+<li>在页面加载或数据请求过程中展示加载信息或<strong>加载动画</strong>；</li>
+<li>在上传文件、解析数据等交互场景时展示<strong>进度条；</strong></li>
+</ul>
+<p>显示内容，或者至少显示页面的某个部分，并指示内容正在尽快加载，对于提高感知性能至关重要。当页面客观性能难以优化时，这些方式可以让用户感知的性能比页面的实际性能更好，这也是优化 Web 性能的一种方式。通俗点说，<strong>你的页面可能不能做得更快，但你可以让用户感觉更快。</strong><br>1.骨架屏<br>2.loading<br>3.meta标签优化（title,description,keywords）<br>4.heading标签的优化<br>5.alt优化</p>
+<h4 id="不要展示-绝对loading--占位">不要展示 “绝对Loading / 占位”</h4>
+<p>当前时代，大部分网页的数据都是动态下发的，甚至千人前面，为了减少用户等待的焦灼感，往往会设置一个 Loading 动画或者 骨骼图占位。但当请求响应足够快的时候，会发现这种 Loading 或 占位 却会给人相反的感觉 —— 瞬间的闪动。<br>针对这种情况，在使用 Loading 或骨架图占位的，可以做一定的优化，比如请求发起后 200ms 以上还未返回数据才展示占位图。在 React Suspense 中，为了这种效果官方甚至加了一个 API。</p>
+<h1 id="性能测量">性能测量</h1>
+<p><code>window.performace</code> 能展示绝大多数检测 Web 性能的指标，在业务代码中埋点收集 window.performance 的值，可以为网页性能短板做很好的测量与统计。</p>
+<h1 id="成果">成果</h1>
+<p>升级之后至少有这几方面的收益:</p>
+<ul>
+<li>白屏等待时间缩短，基本上可以到500ms以内，同时layout可以在本地进行缓存。</li>
+<li>前后端开发效率的提升，动静分离之后前端不在需要依赖于javaweb提供环境来开发和联调。</li>
+<li>节省服务器端的资源，layout上CDN之后，服务端的IO从之前的读取VM和拼装数据变成只需要提供一个MTOP接口，预计能节省一半的服务器。</li>
+<li>前端可以通过serviceworker对数据预取来加快首屏的展现。</li>
+</ul>
+<h1 id="浏览器版本">浏览器版本:</h1>
+<p>chrome 必须 48+，低于当前版本的占比是 <strong>0.4%</strong><br>Firefox 必须 60+，低于当前版本的占比是  <strong>0.07%</strong><br>yandex 必须 19+，低于当前版本的占比是  <strong>0.13%</strong><br>edge 必须  18+, 低于当前版本的占比是  <strong>0.3%</strong><br>safari 必须 12+, 低于当前版本的占比是  <strong>0.79%</strong><br>ie 必须 10+,  剔除掉 IE8以下，低于当前版本的占比是  0.62%</p>
+<h1 id="相关知识点">相关知识点</h1>
+<h2 id="预加载和懒加载">预加载和懒加载</h2>
+<p>两者主要区别是一个是提前加载，一个是迟缓甚至不加载。懒加载对服务器前端有一定的缓解压力作用，预加载则会增加服务器前端压力。</p>
+<h2 id="反链、内链、外链">反链、内链、外链</h2>
+<p>（网页）反向链接其实就是在目标文档（网页）内部进行声明，要求目标文档指向自己（网页）的链接”，例如，“网页湛美在线上有一个链接指向知乎的某网页，则网页湛美在线上的链接就是网页知乎的反向链接。<br>反向链接就是网页与网页之间相互的链接关系，比如：网页C与网页D，如果在网页C中，有一个超级链接指向了D，那么我们就可以称网页C是网页D的反向链接。  </p>
+<p>其中，反向链接包括：内链与外链，来自外链的反向链接，我们也可以称作导入链接。  <br>外链（外部链接，又称导入链接）“就是指从互联网上别的网站导入到自己网站的链接”。外链，从普通用户的角度来说，常常是指自己网站给出到其它网站链接的一种行为，英文为outbound link。<br>内链（内部链接）“就是在同一域名网站下的内容页面之间的互相链接(自己网站的一个内容导入到自己网站的其他相关内容页面的链接，也称为站内链接)”。</p>
+<h2 id="css和js的装载与执行">css和js的装载与执行</h2>
+<h3 id="html页面加载渲染的过程">HTML页面加载渲染的过程</h3>
+<h4 id="一个网站在浏览器端是如何进行渲染的">一个网站在浏览器端是如何进行渲染的</h4>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/webp/329715/1591585061736-1aad5256-67f7-45c9-a99b-a8149c674ed9.webp#height=299&id=w8Bfx&originHeight=299&originWidth=1280&originalType=binary&ratio=1&size=0&status=done&style=none&width=1280" alt=""></p>
+<h3 id="html渲染过程中的一些特点">HTML渲染过程中的一些特点</h3>
+<ul>
+<li>顺序执行，并发加载<ul>
+<li>词法分析：从上到下依次解析<ul>
+<li>通过<code>HTML</code>生成<code>Token对象</code>（当前节点的所有子节点生成后，才会通过<code>next token</code>获取到当前节点的兄弟节点），最终生成<code>Dom Tree</code></li>
+</ul>
+</li>
+<li>并发加载：资源请求是并发请求的</li>
+<li>并发上限<ul>
+<li>浏览器中可以支持并发请求，不同浏览器所支持的并发数量不同（以域名划分），以<code>Chrome</code>为例，并发上限为6个</li>
+<li>优化点： 把CDN资源分布在多个域名下</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>是否阻塞<ul>
+<li><code>css</code>阻塞<ul>
+<li><code>css</code> 在<code>head</code>中通过<code>link</code>引入会阻塞页面的渲染<ul>
+<li>如果我们把<code>css</code>代码放在<code>head</code>中去引入的话，那么我们整个页面的渲染实际上就会等待<code>head</code>中<code>css</code>加载并生成<code>css树</code>，最终和<code>DOM</code>整合生成<code>RanderTree</code>之后才会进行渲染</li>
+<li>为了浏览器的渲染，能让页面显示的时候视觉上更好。 避免某些情况，如：假设你放在页面最底部，用户打开页面时，有可能出现，页面先是显示一大堆文字或图片，自上而下，丝毫没有排版和样式可言。最后，页面又恢复所要的效果</li>
+</ul>
+</li>
+<li><code>css</code>不阻塞<code>js</code>的加载，但阻塞<code>js</code>的执行</li>
+<li><code>css</code>不阻塞外部脚步的加载(<code>webkit preloader 预资源加载器</code>)</li>
+</ul>
+</li>
+<li><code>js</code>阻塞<ul>
+<li>直接通过<code>&lt;script src&gt;</code>引入会阻塞后面节点的渲染<ul>
+<li><code>html parse</code>认为<code>js</code>会动态修改文档结构(<code>document.write</code>等方式)，没有进行后面文档的变化</li>
+<li><code>async</code>、<code>defer</code>(<code>async</code>放弃了依赖关系)<ul>
+<li>defer是“渲染完再执行”，async是“下载完就执行”。</li>
+<li>如果有多个defer脚本，会按照它们在页面出现的顺序加载，而多个async脚本是不能保证加载顺序的。</li>
+<li><code>defer</code>属性（<code>&lt;script src=&quot;&quot; defer&gt;&lt;/script&gt;</code>） (这是延迟执行引入的<code>js</code>脚本（即脚本加载是不会导致解析停止，等到<code>document</code>全部解析完毕后，<code>defer-script</code>也加载完毕后，在执行所有的<code>defer-script</code>加载的<code>js</code>代码，再触发<code>Domcontentloaded</code>）</li>
+<li><code>async</code>属性（<code>&lt;script src=&quot;&quot; async&gt;&lt;/script&gt;</code>）<ul>
+<li>这是异步执行引入的<code>js</code>脚本文件</li>
+<li>与<code>defer</code>的区别是<code>async</code>会在加载完成后就执行，但是不会影响阻塞到解析和渲染。但是还是会阻塞<code>load</code>事件，所以<code>async-script</code>会可能在<code>DOMcontentloaded</code>触发前或后执行，但是一定会在<code>load</code>事件前触发。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="懒加载和预加载-1">懒加载和预加载</h2>
+<h3 id="懒加载原生js和zeptolazyload">懒加载原生<code>js</code>和<code>zepto.lazyload</code></h3>
+<blockquote>
+<p><code>原理</code></p>
+</blockquote>
+<p>先将<code>img</code>标签中的<code>src</code>链接设为同一张图片（空白图片），将其真正的图片地址存储再<code>img</code>标签的自定义属性中（比如<code>data-src</code>）。当<code>js</code>监听到该图片元素进入可视窗口时，即将自定义属性中的地址存储到<code>src</code>属性中，达到懒加载的效果。</p>
+<blockquote>
+<p>注意问题：</p>
+</blockquote>
+<ul>
+<li>关注首屏处理,因为还没滑动</li>
+<li>占位，图片大小首先需要预设高度，如果没有设置的话，会全部显示出来</li>
+<li></li>
+</ul>
+<pre><code>var viewheight = document.documentElement.clientHeight   //可视区域高度
+function lazyload(){
+    var eles = document.querySelectorAll(&#x27;img[data-original][lazyload]&#x27;)
+    Array.prototype.forEach.call(eles,function(item,index){
+        var rect;
+        if(item.dataset.original === &#x27;&#x27;) return;
+        rect = item.getBoundingClientRect(); //返回元素的大小及其相对于视口的
+        if(rect.bottom &gt;= 0 &amp;&amp; rect.top &lt; viewheight){
+            !function(){
+                var img = new Image();
+                img.src = item.dataset.url;
+                img.onload = function(){
+                    item.src = img.src
+                }
+                item.removeAttribute(&#x27;data-original&#x27;);
+                item.removeAttribute(&#x27;lazyload&#x27;);
+            }()
+        }
+    })
+}
+lazyload()
+document.addEventListener(&#x27;scroll&#x27;,lazyload)
+复制代码
+</code></pre>
+<h3 id="预加载原生js和preloadjs实现">预加载原生<code>js</code>和<code>preloadJS</code>实现</h3>
+<h4 id="预加载实现的几种方式">预加载实现的几种方式</h4>
+<ul>
+<li><p>第一种方式：直接请求下来</p>
+<pre><code>&lt;img src=&quot;https://user-gold-cdn.xitu.io/2019/2/21/1690d1b216cbfa18&quot; style=&quot;display: none&quot;/&gt;
+&lt;img src=&quot;https://user-gold-cdn.xitu.io/2019/2/21/1690d1b21b70c8d2&quot; style=&quot;display: none&quot;/&gt;
+&lt;img src=&quot;https://user-gold-cdn.xitu.io/2019/2/21/1690d1b216e17e26&quot; style=&quot;display: none&quot;/&gt;
+&lt;img src=&quot;https://user-gold-cdn.xitu.io/2019/2/21/1690d1b217b3ae59&quot; style=&quot;display: none&quot;/&gt;
+复制代码
+</code></pre>
+</li>
+<li><p>第二种方式：<code>image</code>对象</p>
+<pre><code>var image = new Image();
+image.src = &quot;www.pic26.com/dafdafd/safdas.jpg&quot;；
+复制代码
+</code></pre>
+</li>
+<li><p>第三种方式：<code>xmlhttprequest</code></p>
+<ul>
+<li>缺点：存在跨域问题</li>
+<li>优点：好控制<pre><code>var xmlhttprequest = new XMLHttpRequest();
+xmlhttprequest.onreadystatechange = callback;
+xmlhttprequest.onprogress = progressCallback;
+xmlhttprequest.open(&quot;GET&quot;,&quot;http:www.xxx.com&quot;,true);
+xmlhttprequest.send();
+function callback(){
+  if(xmlhttprequest.readyState == 4 &amp;&amp; xmlhttprequest.status == 200){
+   var responseText = xmlhttprequest.responseText;
+  }else{
+   console.log(&quot;Request was unsuccessful:&quot; + xmlhttprequest.status);
+  }
+}
+function progressCallback(){
+  e = e || event;
+  if(e.lengthComputable){
+   console.log(&quot;Received&quot;+e.loaded+&quot;of&quot;+e.total+&quot;bytes&quot;)
+  }
+}   
+复制代码
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<p> <br><code>PreloadJS模块</code></p>
+<ul>
+<li><strong>本质</strong>：<strong>权衡浏览器加载能力，让它尽可能饱和利用起来</strong></li>
+</ul>
+<h2 id="重绘和回流">重绘和回流</h2>
+<p><code>**css**</code><strong>性能让</strong><code>**javascript**</code><strong>变慢</strong><br>要把<code>css</code>相关的外部文件引入放进<code>head</code>中，加载<code>css</code>时，整个页面的渲染是阻塞的，同样的执行<code>javascript</code>代码的时候也是阻塞的，例如<code>javascript</code>死循环。</p>
+<pre><code>一个线程   =&gt;  javascript解析
+一个线程   =&gt;  UI渲染
+复制代码
+</code></pre>
+<p>这两个线程是互斥的，当<code>UI</code>渲染的时候，<code>javascript</code>的代码被终止。当<code>javascript</code>代码执行，<code>UI</code>线程被冻结。所以<code>css</code>的性能让<code>javascript</code>变慢。<br><code>频繁触发重绘与回流，会导致UI频繁渲染，最终导致js变慢</code></p>
+<h4 id="回流">回流</h4>
+<ul>
+<li><p>当<code>render tree</code>中的一部分(或全部)因为元素的<code>规模尺寸</code>，<code>布局</code>，<code>隐藏</code>等改变而需要<code>重新构建</code>。这就成为回流(<code>reflow</code>)</p>
+</li>
+<li><p>当<code>页面布</code>局和<code>几何属性</code>改变时，就需要<code>回流</code></p>
+<h4 id="重绘">重绘</h4>
+</li>
+<li><p>当<code>render tree</code>中的一些元素需要更新属性，而这些属性只是影响元素的<code>外观</code>，<code>风格</code>，而不影响布局，比如<code>background-color</code>。就称重绘</p>
+<h4 id="关系">关系</h4>
+<p>用到<code>chrome</code> 分析 <code>performance</code><br><code>回流必将引起重绘，但是重绘不一定会引起回流</code></p>
+<h3 id="避免重绘、回流的两种方法">避免重绘、回流的两种方法</h3>
+<h4 id="触发页面重布局的一些css属性">触发页面重布局的一些css属性</h4>
+</li>
+<li><p>盒子模型相关属性会触发重布局</p>
+<ul>
+<li><code>width</code></li>
+<li><code>height</code></li>
+<li><code>padding</code></li>
+<li><code>margin</code></li>
+<li><code>display</code></li>
+<li><code>border-width</code></li>
+<li><code>border</code></li>
+<li><code>min-height</code></li>
+</ul>
+</li>
+<li><p>定位属性及浮动也会触发重布局</p>
+<ul>
+<li><code>top</code></li>
+<li><code>bottom</code></li>
+<li><code>left</code></li>
+<li><code>right</code></li>
+<li><code>position</code></li>
+<li><code>float</code></li>
+<li><code>clear</code></li>
+</ul>
+</li>
+<li><p>改变节点内部文字结构也会触发重布局</p>
+</li>
+<li><p><code>text-align</code></p>
+</li>
+<li><p><code>overflow-y</code></p>
+</li>
+<li><p><code>font-weight</code></p>
+</li>
+<li><p><code>overflow</code></p>
+</li>
+<li><p><code>font-family</code></p>
+</li>
+<li><p><code>line-height</code></p>
+</li>
+<li><p><code>vertical-align</code></p>
+</li>
+<li><p><code>white-space</code></p>
+</li>
+<li><p><code>font-size</code></p>
+</li>
+</ul>
+<p><code>优化点：使用不触发回流的方案替代触发回流的方案</code></p>
+<h4 id="只触发重绘不触发回流">只触发重绘不触发回流</h4>
+<ul>
+<li><p><code>color</code></p>
+</li>
+<li><p><code>border-style</code>、<code>border-radius</code></p>
+</li>
+<li><p><code>visibility</code></p>
+</li>
+<li><p><code>text-decoration</code></p>
+</li>
+<li><p><code>background</code>、<code>background-image</code>、<code>background-position</code>、<code>background-repeat</code>、<code>background-size</code></p>
+</li>
+<li><p><code>outline</code>、<code>outline-color</code>、<code>outline-style</code>、<code>outline-width</code></p>
+</li>
+<li><p><code>box-shadow</code></p>
+<h4 id="新建dom的过程">新建DOM的过程</h4>
+</li>
+<li><p>获取<code>DOM</code>后分割为多个图层</p>
+</li>
+<li><p>对每个图层的节点计算样式结果(<code>Recalculate style</code> 样式重计算)</p>
+</li>
+<li><p>为每个节点生成图形和位置(<code>Layout</code> 回流和重布局)</p>
+</li>
+<li><p>将每个节点绘制填充到图层位图中(<code>Paint Setup</code>和<code>Paint</code>  <code>重绘</code>)</p>
+</li>
+<li><p>图层作为纹理上传至<code>gpu</code></p>
+</li>
+<li><p>符合多个图层到页面上生成最终屏幕图像(<code>Composite Layers</code> 图层重组)</p>
+<h3 id="浏览器绘制dom的过程是这样子的：">浏览器绘制<code>DOM</code>的过程是这样子的：</h3>
+</li>
+<li><p>获取 DOM 并将其分割为多个层（<code>layer</code>），将每个层独立地绘制进位图（<code>bitmap</code>）中</p>
+</li>
+<li><p>将层作为纹理（<code>texture</code>）上传至 <code>GPU</code>，复合（<code>composite</code>）多个层来生成最终的屏幕图像</p>
+</li>
+<li><p><code>left/top/margin</code>之类的属性会影响到元素在文档中的布局，当对布局（<code>layout</code>）进行动画时，该元素的布局改变可能会影响到其他元素在文档中的位置，就导致了所有被影响到的元素都要进行重新布局，浏览器需要为整个层进行重绘并重新上传到 <code>GPU</code>，造成了极大的性能开销。</p>
+</li>
+<li><p><code>transform</code> 属于合成属性（<code>composite property</code>），对合成属性进行 <code>transition/animation</code> 动画将会创建一个合成层（<code>composite layer</code>），这使得被动画元素在一个独立的层中进行动画。</p>
+</li>
+<li><p>通常情况下，浏览器会将一个层的内容先绘制进一个位图中，然后再作为纹理（<code>texture</code>）上传到 <code>GPU</code>，只要该层的内容不发生改变，就没必要进行重绘（<code>repaint</code>），浏览器会通过重新复合（<code>recomposite</code>）来形成一个新的帧。</p>
+<h4 id="chrome创建图层的条件"><code>chrome</code>创建图层的条件</h4>
+<p><code>将频繁重绘回流的DOM元素单独作为一个独立图层，那么这个DOM元素的重绘和回流的影响只会在这个图层中</code></p>
+</li>
+<li><p><code>3D</code>或透视变换</p>
+</li>
+<li><p><code>CSS</code>属性使用加速视频解码的 <code>&lt;video&gt;</code> 元素</p>
+</li>
+<li><p>拥有 <code>3D</code> (<code>WebGL</code>) 上下文或加速的 <code>2D</code> 上下文的 <code>&lt;canvas&gt;</code> 元素</p>
+</li>
+<li><p>复合插件(如 <code>Flash</code>)</p>
+</li>
+<li><p>进行 <code>opacity/transform</code> 动画的元素拥有加速</p>
+</li>
+<li><p><code>CSS filters</code> 的元素元素有一个包含复合层的后代节点(换句话说，就是一个元素拥有一个子元素，该子元素在自己的层里)</p>
+</li>
+<li><p>元素有一个 <code>z-index</code> 较低且包含一个复合层的兄弟元素(换句话说就是该元素在复合层上面渲染)</p>
+<blockquote>
+<p>总结：对布局属性进行动画，浏览器需要为每一帧进行重绘并上传到 <code>GPU</code> 中对合成属性进行动画，浏览器会为元素创建一个独立的复合层，当元素内容没有发生改变，该层就不会被重绘，浏览器会通过重新复合来创建动画帧</p>
+</blockquote>
+</li>
+</ul>
+<p><code>gif图</code></p>
+<h4 id="总结">总结</h4>
+<ul>
+<li><p>尽量避免使用触发<code>回流</code>、<code>重绘</code>的<code>CSS</code>属性</p>
+</li>
+<li><p>将<code>重绘</code>、<code>回流</code>的影响范围限制在单独的图层(<code>layers</code>)之内</p>
+</li>
+<li><p>图层合成过程中消耗很大页面性能，这时候需要平衡考虑重绘回流的性能消耗</p>
+<h3 id="实战优化点总结">实战优化点总结</h3>
+</li>
+<li><p>用<code>translate</code>替代<code>top</code>属性</p>
+<ul>
+<li><code>top</code>会触发<code>layout</code>，但<code>translate</code>不会</li>
+</ul>
+</li>
+<li><p>用<code>opacity</code>代替<code>visibility</code></p>
+<ul>
+<li><code>opacity</code>不会触发重绘也不会触发回流，只是改变图层<code>alpha</code>值，但是必须要将这个图片独立出一个图层</li>
+<li><code>visibility</code>会触发重绘</li>
+</ul>
+</li>
+<li><p>不要一条一条的修改<code>DOM</code>的样式，预先定义好<code>class</code>，然后修改<code>DOM</code>的<code>className</code></p>
+</li>
+<li><p><code>把DOM</code>离线后修改，比如：先把<code>DOM</code>给<code>display:none</code>（有一次<code>reflow</code>），然后你修改100次，然后再把它显示出来</p>
+</li>
+<li><p>不要把<code>DOM</code>节点的属性值放在一个循环里当成循环的变量</p>
+<ul>
+<li><code>offsetHeight</code>、<code>offsetWidth</code>每次都要刷新缓冲区，缓冲机制被破坏</li>
+<li>先用变量存储下来</li>
+</ul>
+</li>
+<li><p>不要使用<code>table</code>布局，可能很小的一个小改动会造成整个<code>table</code>的重新布局</p>
+<ul>
+<li><code>div</code>只会影响后续样式的布局</li>
+</ul>
+</li>
+<li><p>动画实现的速度的选择</p>
+<ul>
+<li>选择合适的动画速度</li>
+<li>根据<code>performance</code>量化性能优化</li>
+</ul>
+</li>
+<li><p>对于动画新建图层</p>
+<ul>
+<li>启用<code>gpu</code>硬件加速(并行运算)，<code>gpu加速</code>意味着数据需要从<code>cpu</code>走总线到<code>gpu</code>传输，需要考虑传输损耗.<ul>
+<li><code>transform:translateZ(0)</code></li>
+<li><code>transform:translate3D(0)</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/webp/329715/1591585159537-23e93a99-08c4-4dcb-8fcb-2af9effab65c.webp#height=780&id=BOUKm&originHeight=780&originWidth=1280&originalType=binary&ratio=1&size=0&status=done&style=none&width=1280" alt=""></p>
+<h2 id="图片">图片</h2>
+<p><code>jpg</code>有损压缩：虽然损失一些信息，但是肉眼可见影响并不大</p>
+<h3 id="png8png24png32之间的区别"><code>png8</code>/<code>png24</code>/<code>png32</code>之间的区别</h3>
+<ul>
+<li><code>png8</code>   ----<code>256色</code> + 支持透明</li>
+<li><code>png24</code> ----<code>2^24</code>  + 不支持透明</li>
+<li><code>png32</code>  ---<code>2^24</code> +支持透明</li>
+</ul>
+<p><code>文件大小</code>  +   <code>色彩丰富程度</code><br><code>png32</code>是在<code>png24</code>上支持了透明，针对不同的业务场景选择不同的图片格式很重要</p>
+<h3 id="不同的格式图片常用的业务场景">不同的格式图片常用的业务场景</h3>
+<h4 id="不同格式图片的特点">不同格式图片的特点</h4>
+<ul>
+<li><p><code>jpg</code>有损压缩，压缩率高，不支持透明</p>
+</li>
+<li><p><code>png</code>支持透明，浏览器兼容性好</p>
+</li>
+<li><p><code>webp</code>压缩程度更好，在<code>ios webview</code>中有兼容性问题</p>
+</li>
+<li><p><code>svg</code>矢量图，代码内嵌，相对较小，图片样式相对简单的场景(尽量使用，绘制能力有限，图片简单用的比较多)</p>
+<h4 id="不同格式图片的使用场景">不同格式图片的使用场景</h4>
+</li>
+<li><p><code>jpg</code>：大部分不需要透明图片的业务场景</p>
+</li>
+<li><p><code>png</code>：大部分需要透明图片的业务场景</p>
+</li>
+<li><p><code>webp</code>：<code>android</code>全部(解码速度和压缩率高于<code>jpg</code>和<code>png</code>，但是<code>ios</code> <code>safari</code>还没支持)</p>
+</li>
+<li><p><code>svg</code>：图片样式相对简单的业务场景</p>
+<h3 id="图片压缩的几种情况">图片压缩的几种情况</h3>
+</li>
+<li><p>针对真实图片情况，舍弃一些相对无关紧要的色彩信息</p>
+</li>
+<li><p><code>CSS雪碧图</code>：把你的网站用到的一些图片整合到一张单独的图片中</p>
+<ul>
+<li>优点：减少<code>HTTP</code>请求的数量(通过<code>backgroundPosition</code>定位所需图片)</li>
+<li>缺点：整合图片比较大时，加载比较慢(如果这张图片没有加载成功，整个页面会失去图片信息)<code>facebook</code>官网任然在用，主要<code>pc</code>用的比较多，相对性能比较强</li>
+</ul>
+</li>
+<li><p><code>Image-inline</code>：将图片的内容嵌到<code>html</code>中(减少网站的<code>HTTP</code>请求)</p>
+<ul>
+<li><code>base64信息</code>，减少网站的HTTP请求,如果图片比较小比较多，时间损耗主要在请求的骨干网络</li>
+</ul>
+</li>
+<li><p><code>使用矢量图</code></p>
+<ul>
+<li>使用<code>SVG</code>进行矢量图的绘制</li>
+<li>使用<code>icon-font</code>解决<code>icon</code>问题</li>
+</ul>
+</li>
+<li><p><code>在android下使用webp</code></p>
+<ul>
+<li><code>webp</code>的优势主要体现在它具有更优的图像数据压缩算法，能带来更小的图片体积，而且拥有肉眼识别无差异的图像质量；</li>
+<li>同时具备了无损和有损的压缩模式、<code>Alpha</code>透明以及动画的特性，在<code>JPEG</code>和<code>PNG</code>上的转化效果都非常优秀、稳定和统一</li>
+</ul>
+</li>
+</ul>
+<h2 id="参考">参考</h2>
+<p><a target="_blank" href="https://juejin.im/post/5c011e0c5188252ea66afdfa">https://juejin.im/post/5c011e0c5188252ea66afdfa</a><br><a target="_blank" href="https://segmentfault.com/a/1190000022666889">https://segmentfault.com/a/1190000022666889</a><br><a target="_blank" href="https://zhuanlan.zhihu.com/p/139146602">https://zhuanlan.zhihu.com/p/139146602</a><br><a target="_blank" href="https://developer.aliyun.com/article/763013">https://developer.aliyun.com/article/763013</a><br><a target="_blank" href="http://www.imooc.com/article/31682">http://www.imooc.com/article/31682</a><br><a target="_blank" href="https://zhuanlan.zhihu.com/p/138904640">https://zhuanlan.zhihu.com/p/138904640</a></p>
+
+  </div>
+  <div id="footer" class="footer">
+    <div class="footer-info">
+      &copy; 2021 蔡延松
+    </div>
+    <a href="http://www.beian.miit.gov.cn/" target="_blank">浙ICP备19046722号</a>
+  </div>
+</body>
+<script src="/js/index.js"></script>
+</html>
