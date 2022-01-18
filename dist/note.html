@@ -16,7 +16,7 @@
       <a class="logo" href="/">
         <img src="/imgs/dog_128px.png" />
       </a>
-      <div class="nav">
+      <div id="header-nav" class="nav">
         <a href="/">首页</a>
         <a href="/article-list">文章</a>
         <a href="/lp">LP</a>
@@ -26,13 +26,17 @@
     </div>
     <script>
       // href query
-      var noteLink = document.getElementById("hreader-note-link");
-      noteLink.href = noteLink.href + window.location.search;
+      var nav = document.getElementById('header-nav');
+      var arr = nav && nav.children;
+      for (var i=0;i<arr.length;i++) {
+        var noteLink = arr[i];
+        noteLink.href = noteLink.href + window.location.search;
+      }
     </script>
   </div>
   <div id="root" class="root">
 <title>Note</title>
-<h4>注意：保存在本地，请勿清除app的数据，否则会导致数据丢失！</h4>
+<h4>注意：请勿清除 App 的数据，否则会导致数据丢失！</h4>
 <div class="ipt-wrap">
   <textarea id="text-ipt" class="text-ipt"></textarea>
   <div class="option-wrap">
@@ -92,8 +96,6 @@
 
   .notes-wrap {
     box-sizing: border-box;
-    /*   padding: 10px;
-border: 1px solid; */
   }
 
   .note-item {

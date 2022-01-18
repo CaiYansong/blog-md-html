@@ -16,7 +16,7 @@
       <a class="logo" href="/">
         <img src="/imgs/dog_128px.png" />
       </a>
-      <div class="nav">
+      <div id="header-nav" class="nav">
         <a href="/">首页</a>
         <a href="/article-list">文章</a>
         <a href="/lp">LP</a>
@@ -26,8 +26,12 @@
     </div>
     <script>
       // href query
-      var noteLink = document.getElementById("hreader-note-link");
-      noteLink.href = noteLink.href + window.location.search;
+      var nav = document.getElementById('header-nav');
+      var arr = nav && nav.children;
+      for (var i=0;i<arr.length;i++) {
+        var noteLink = arr[i];
+        noteLink.href = noteLink.href + window.location.search;
+      }
     </script>
   </div>
   <div id="root" class="root">
@@ -45,7 +49,7 @@
   <div id="agree-time" class="agree-time">0天0时0分0秒</div>
 </div>
 
-<ul>
+<ul id="lp-menus">
   <li>
     <h1>
       <a target="_blank" href="/lp/lp.html"> 相识 </a>
@@ -82,8 +86,12 @@
 
 <script>
   // href query
-  var noteLink = document.getElementById("note-link");
-  noteLink.href = noteLink.href + window.location.search;
+  var menu = document.getElementById("lp-menus");
+  var menuItems = menu && menu.children;
+  for (var i=0;i<menuItems.length;i++) {
+    var noteLink = menuItems[i].children[0].children[0];
+    noteLink.href = noteLink.href + window.location.search;
+  }
 
   // ------- 数据 -------
   var AGREE_DATE = "2020-09-14 01:00:00";

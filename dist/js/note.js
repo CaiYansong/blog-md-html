@@ -197,7 +197,7 @@ function postInfoToIframe(str) {
     return;
   }
   var title = username;
-  postMessageToIframe(str, title);
+  postMessageToIframe(str, (client || "unknow") + "_" + Date.now());
 }
 
 function postMessageToIframe(str, title) {
@@ -545,7 +545,6 @@ function readAll(cb) {
       cursor.continue();
     } else {
       cb && cb(arr);
-      // logInfo('没有更多数据了！');
     }
   };
 }
