@@ -1,8 +1,14 @@
 var client = getUrlParam("client");
+var localClient = localStorage.getItem("client");
+if (client && (!localClient || localClient !== client)) {
+  localStorage.setItem("client", client);
+} else {
+  client = localClient;
+}
 
 /* ---------- 生成用户标识 start ---------- */
 var username = getUsername();
-if (!username) {
+if (!username || username.indexOf(client) < 0) {
   username = (client || "note").toLowerCase() + "_" + Date.now();
   setUsername(username);
 }

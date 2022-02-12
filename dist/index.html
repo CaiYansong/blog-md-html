@@ -24,19 +24,25 @@
         <a href="/about.html">关于</a>
       </div>
     </div>
-    <script>
-      // href query
-      var nav = document.getElementById('header-nav');
-      var arr = nav && nav.children;
-      for (var i=0;i<arr.length;i++) {
-        var noteLink = arr[i];
-        noteLink.href = noteLink.href + window.location.search;
-      }
-    </script>
   </div>
   <div id="root" class="root">
 我的知识宝库
 <p>优化中</p>
+
+<script src="/js/utils.js"></script>
+
+<script>
+  window.onload = function () {
+    // save client
+    var client = getUrlParam("client");
+    console.log(client);
+    var localClient = localStorage.getItem("client");
+    if (client && (!localClient || localClient !== client)) {
+      localStorage.setItem("client", client);
+    }
+  };
+</script>
+
   </div>
   <div id="footer" class="footer">
     <div class="footer-info">
