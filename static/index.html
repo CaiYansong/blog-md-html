@@ -1,2 +1,16 @@
 我的知识宝库
 <p>优化中</p>
+
+<script src="/js/utils.js"></script>
+
+<script>
+  window.onload = function () {
+    // save client
+    var client = getUrlParam("client");
+    console.log(client);
+    var localClient = localStorage.getItem("client");
+    if (client && (!localClient || localClient !== client)) {
+      localStorage.setItem("client", client);
+    }
+  };
+</script>

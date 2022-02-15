@@ -1,8 +1,14 @@
 var client = getUrlParam("client");
+var localClient = localStorage.getItem("client");
+if (client && (!localClient || localClient !== client)) {
+  localStorage.setItem("client", client);
+} else {
+  client = localClient;
+}
 
 /* ---------- 生成用户标识 start ---------- */
 var username = getUsername();
-if (!username) {
+if (!username || username.indexOf(client) < 0) {
   username = (client || "note").toLowerCase() + "_" + Date.now();
   setUsername(username);
 }
@@ -16,7 +22,7 @@ function getUsername() {
 
 // notes
 var noteTpl =
-  '<div class="note-item"> <div class="note-content">{content}</div> <div class="note-info"> <span class="datetime">{datetime}</span> <div class="note-options"> <button class="edit-btn" data-type="edit" data-id="{id}">编辑</button> <button class="devare-btn" data-type="del" data-id="{id}">删除</button> </div> </div> </div>';
+  '<div class="note-item"> <div class="note-content">{content}</div> <div class="note-info"> <span class="datetime">{datetime}</span> <div class="note-options"> <button class="edit-btn" data-type="edit" data-id="{id}">编辑</button> <button class="delete-btn" data-type="del" data-id="{id}">删除</button> </div> </div> </div>';
 
 var textAreaEle = document.getElementById("text-ipt");
 var noteWrapEle = document.getElementById("notes-wrap");
@@ -63,9 +69,11 @@ function init() {
     var type = e.target.getAttribute("data-type");
     var id = e.target.getAttribute("data-id");
     if (type === "del") {
-      removeNote(id, function () {
-        renderNoteList();
-      });
+      if (window.confirm('确认删除？')) {
+        removeNote(id, function () {
+          renderNoteList();
+        });
+      }
     }
     if (type === "edit") {
       readNote(id, function (item) {

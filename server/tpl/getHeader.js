@@ -12,15 +12,6 @@ function getHeader() {
         <a href="/about.html">关于</a>
       </div>
     </div>
-    <script>
-      // href query
-      var nav = document.getElementById('header-nav');
-      var arr = nav && nav.children;
-      for (var i=0;i<arr.length;i++) {
-        var noteLink = arr[i];
-        noteLink.href = noteLink.href + window.location.search;
-      }
-    </script>
   </div>`;
 }
 

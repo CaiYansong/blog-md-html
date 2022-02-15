@@ -24,15 +24,6 @@
         <a href="/about.html">关于</a>
       </div>
     </div>
-    <script>
-      // href query
-      var nav = document.getElementById('header-nav');
-      var arr = nav && nav.children;
-      for (var i=0;i<arr.length;i++) {
-        var noteLink = arr[i];
-        noteLink.href = noteLink.href + window.location.search;
-      }
-    </script>
   </div>
   <div id="root" class="root">
 <title>本地记事本</title>
@@ -150,7 +141,7 @@
     <span class="datetime">{datetime}</span>
     <div class="note-options">
       <button class="edit-btn" data-type="edit" data-id="{id}">编辑</button>
-      <button class="devare-btn" data-type="del" data-id="{id}">删除</button>
+      <button class="delete-btn" data-type="del" data-id="{id}">删除</button>
     </div>
   </div>
   </div>`;
