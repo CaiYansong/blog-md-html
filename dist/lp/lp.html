@@ -91,6 +91,11 @@
   var datingList = [
     {
       address: "杭州",
+      startTime: "2022-01-15 21:26:00",
+      endTime: '2022-02-27 13:45:00',
+    },
+    {
+      address: "杭州",
       startTime: "2022-01-05 21:26:00",
       endTime: '2022-01-17 08:15:00',
     },
@@ -198,15 +203,7 @@
   var agreeTimeEle = document.getElementById("agree-time");
   var datingListEle = document.getElementById("dating-list");
 
-  var datingItemTpl =
-    `
-                      <li class="dating-item">
-                        <div class="dating-address">{datingAddress}</div>
-                        <div class="dating-time">{datingTime}</div>
-                        <div class="interval-time">距离上次：{intervalTime}</div>
-                        <div class="left-time">{leftTime}</div>
-                      </li>
-                      `;
+  var datingItemTpl = '<li class="dating-item"><div class="dating-address">{datingAddress}</div><div class="dating-time">{datingTime}</div><div class="interval-time">距离上次：{intervalTime}</div><div class="left-time">{leftTime}</div></li>';
 
   /**
    * 根据字符串获取时间戳
